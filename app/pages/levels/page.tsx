@@ -1,0 +1,50 @@
+'use client';
+import { supabase } from '@/app/lib/supabaseClient';
+import { CircleCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+interface Level {
+	id: number;
+	title: string;
+}
+
+export default function LevelsOverview() {
+	const [fetchError, setFetchError] = useState<string | null>(null);
+	const [levels, setLevels] = useState<Level[] | null>(null);
+
+	useEffect(() => {
+		const fetchLevels = async () => {
+			const { data, error } = await supabase.from('levels').select();
+			console.log('DATA:', data);
+			console.log('ERROR:', error);
+			if (error) {
+				setFetchError('Could not fetch the levels');
+				setLevels(null);
+			}
+			if (data) {
+				setLevels(data);
+				setFetchError(null);
+			}
+		};
+		fetchLevels();
+	}, []);
+
+	return (
+		<main>
+			{fetchError && <p>{fetchError}</p>}
+			{levels && levels.length === 0 && <p>No levels found</p>}
+			{levels &&
+				levels.map(level => (
+					<div key={level.id}>
+						<div>
+							<p>
+								Level <span>{level.id}</span>
+							</p>
+							<h2>{level.title}</h2>
+						</div>
+						<CircleCheck />
+					</div>
+				))}
+		</main>
+	);
+}

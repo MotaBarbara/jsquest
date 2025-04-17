@@ -2,6 +2,7 @@
 import { supabase } from '@/app/lib/supabaseClient';
 import { CircleCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface Level {
 	id: number;
@@ -35,7 +36,7 @@ export default function LevelsOverview() {
 			{levels && levels.length === 0 && <p>No levels found</p>}
 			{levels &&
 				levels.map(level => (
-					<div key={level.id}>
+					<Link href={`/pages/exercises/${level.id}`} key={level.id}>
 						<div>
 							<p>
 								Level <span>{level.id}</span>
@@ -43,7 +44,7 @@ export default function LevelsOverview() {
 							<h2>{level.title}</h2>
 						</div>
 						<CircleCheck />
-					</div>
+					</Link>
 				))}
 		</main>
 	);

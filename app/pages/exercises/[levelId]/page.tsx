@@ -18,7 +18,7 @@ export default function ExercisesOverview() {
 	const [exercises, setExercises] = useState<Exercise[] | null>(null);
 
 	useEffect(() => {
-		const fetchExercises = async () => {
+		async function fetchExercises () {
 			console.log('Fetching exercises for levelId:', levelId);
 			const { data, error } = await supabase.from('exercises').select().eq('level_id', levelId);
 

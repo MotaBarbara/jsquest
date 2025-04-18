@@ -14,7 +14,7 @@ export default function LevelsOverview() {
 	const [levels, setLevels] = useState<Level[] | null>(null);
 
 	useEffect(() => {
-		const fetchLevels = async () => {
+		async function fetchLevels() {
 			const { data, error } = await supabase.from('levels').select();
 			console.log('DATA:', data);
 			console.log('ERROR:', error);
@@ -26,7 +26,7 @@ export default function LevelsOverview() {
 				setLevels(data);
 				setFetchError(null);
 			}
-		};
+		}
 		fetchLevels();
 	}, []);
 

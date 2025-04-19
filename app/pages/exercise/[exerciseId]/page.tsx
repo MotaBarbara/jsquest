@@ -46,7 +46,6 @@ export default function ExercisesOverview() {
 				console.log('Current exercise order:', exerciseData.order);
 				console.log('Current exercise level_id:', exerciseData.level_id);
 
-				// // Fetch next exercise
 				const { data: nextExerciseData, error: nextExerciseError } = await supabase
 					.from('exercises')
 					.select('*')
@@ -56,15 +55,12 @@ export default function ExercisesOverview() {
 					.limit(1);
 
 				if (nextExerciseError) {
-					console.log('Error fetching next exercise:', nextExerciseError);
 					setFetchError('Could not fetch the next exercise');
-				} else if (nextExerciseData && nextExerciseData.length > 0) {
-					setNextExercise(nextExerciseData[0]); // Access the first item in the array
-				} else {
-					console.log('No next exercise found with order greater than:', exerciseData.order);
+				}
+				if (nextExerciseData && nextExerciseData.length > 0) {
+					setNextExercise(nextExerciseData[0]);
 				}
 
-				// Fetch level data
 				const { data: levelData, error: levelError } = await supabase.from('levels').select('*').eq('id', exerciseData.level_id).single();
 
 				if (levelError) {
@@ -93,10 +89,18 @@ export default function ExercisesOverview() {
 		});
 		console.log(selectedPositions, exercise?.correct_answers);
 
-		if (JSON.stringify(selectedPositions) !== JSON.stringify(exercise?.correct_answers)) {
-			setIsCorrect(false);
-		} else {
-			setIsCorrect(true);
+		const isAnswerCorrect = JSON.stringify(selectedPositions) === JSON.stringify(exercise?.correct_answers);
+		setIsCorrect(isAnswerCorrect);
+
+		const user = await supabase.auth.getUser();
+		if (user.data.user) {
+			await supabase.from('user_exercises').insert([
+				{
+					user_id: user.data.user.id,
+					exercise_id: exercise?.id,
+					is_correct: isAnswerCorrect,
+				},
+			]);
 		}
 	}
 
@@ -148,12 +152,11 @@ export default function ExercisesOverview() {
 								<p>Well Done!</p>
 								{nextExercise ? (
 									<div>
-										{/* Construct the dynamic link to the next exercise */}
 										<Link href={`/pages/exercise/${nextExercise.id}`}>Next</Link>
 									</div>
 								) : (
 									<div>
-										<p>No more exercises in this level</p>
+										<Link href={`/pages/levels`}>All Level</Link>
 									</div>
 								)}
 							</div>

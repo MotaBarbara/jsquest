@@ -41,6 +41,7 @@ export default function ExercisesOverview() {
 				return;
 			}
 			if (exerciseData) {
+				// Get next exercise
 				setExercise(exerciseData);
 
 				console.log('Current exercise order:', exerciseData.order);
@@ -61,6 +62,7 @@ export default function ExercisesOverview() {
 					setNextExercise(nextExerciseData[0]);
 				}
 
+				// Get the current level
 				const { data: levelData, error: levelError } = await supabase.from('levels').select('*').eq('id', exerciseData.level_id).single();
 
 				if (levelError) {

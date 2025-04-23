@@ -1,48 +1,41 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { supabase } from '@/app/lib/supabaseClient';
+import { supabase } from '@/src/lib/supabaseClient';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
-const signUpFormSchema = z.object({
+const loginFormSchema = z.object({
 	email: z.string().email({ message: 'Enter a valid email address' }),
 	password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
 });
 
-type SignUpFormData = z.infer<typeof signUpFormSchema>;
+type LoginFormData = z.infer<typeof loginFormSchema>;
 
 export default function Login() {
 	const router = useRouter();
-	const [origin, setOrigin] = useState('');
-
-	useEffect(() => {
-		setOrigin(window.location.origin);
-	}, []);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
-		resolver: zodResolver(signUpFormSchema),
+		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
 			email: '',
 			password: '',
 		},
 	});
 
-	async function handleSignUp(data: SignUpFormData) {
+	async function handleLogin(data: LoginFormData) {
 		try {
-			await supabase.auth.signUp({
+			await supabase.auth.signInWithPassword({
 				email: data.email,
 				password: data.password,
-				options: {
-					emailRedirectTo: `${origin}/auth/success`,
-				},
 			});
-			router.push('/auth/confirm-email');
+			toast.success('Login successful!');
+			router.push('/');
 		} catch (error) {
 			console.error(error);
 			toast.error('Error logging in, please try again later.');
@@ -51,8 +44,8 @@ export default function Login() {
 
 	return (
 		<div>
-			<h1>Create Account</h1>
-			<form onSubmit={handleSubmit(handleSignUp)}>
+			<h1>Login</h1>
+			<form onSubmit={handleSubmit(handleLogin)}>
 				<div>
 					<label htmlFor='email'>Email</label>
 					<input id='email' type='email' {...register('email')} />
@@ -64,8 +57,11 @@ export default function Login() {
 					<input id='password' type='password' {...register('password')} />
 					{errors.password && <p>{errors.password.message}</p>}
 				</div>
+				<Link href='/auth/forgot-password'>
+					<p className='text-blue-600 hover:text-blue-800'>Forgot Password?</p>
+				</Link>
 
-				<button type='submit'>Create Account</button>
+				<button type='submit'>Login</button>
 			</form>
 		</div>
 	);

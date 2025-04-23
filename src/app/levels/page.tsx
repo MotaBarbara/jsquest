@@ -1,5 +1,5 @@
 'use client';
-import { supabase } from '@/app/lib/supabaseClient';
+import { supabase } from '@/src/lib/supabaseClient';
 import { CircleCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -82,7 +82,7 @@ export default function LevelsOverview() {
 					const isUnlocked = level.isUnlocked;
 
 					return isUnlocked ? (
-						<Link href={`/pages/exercises/${level.id}`} key={level.id}>
+						<Link href={`/exercises/${level.id}`} key={level.id}>
 							<div>
 								<p>
 									Level <span>{level.id}</span>

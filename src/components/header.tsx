@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Logo from '@/app/assets/js-quest-logo.svg';
+import Logo from '@/src/assets/js-quest-logo.svg';
 import Image from 'next/image';
 import { supabase } from '../lib/supabaseClient';
 import { useEffect, useState } from 'react';

@@ -1,5 +1,5 @@
 'use client';
-import { supabase } from '@/app/lib/supabaseClient';
+import { supabase } from '@/src/lib/supabaseClient';
 import { CircleCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -68,7 +68,7 @@ export default function ExercisesOverview() {
 					const isUnlocked = firstOfLevel.includes(exercise.order) || exercise.order <= highestCompletedOrder + 1;
 
 					return isUnlocked ? (
-						<Link href={`/pages/exercise/${exercise.id}`} key={exercise.id}>
+						<Link href={`/exercise/${exercise.id}`} key={exercise.id}>
 							<div>
 								<div>
 									<p>

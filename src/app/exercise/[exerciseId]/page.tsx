@@ -1,5 +1,5 @@
 'use client';
-import { supabase } from '@/app/lib/supabaseClient';
+import { supabase } from '@/src/lib/supabaseClient';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -154,11 +154,11 @@ export default function ExercisesOverview() {
 								<p>Well Done!</p>
 								{nextExercise ? (
 									<div>
-										<Link href={`/pages/exercise/${nextExercise.id}`}>Next</Link>
+										<Link href={`/exercise/${nextExercise.id}`}>Next</Link>
 									</div>
 								) : (
 									<div>
-										<Link href={`/pages/levels`}>All Level</Link>
+										<Link href={`/levels`}>All Level</Link>
 									</div>
 								)}
 							</div>

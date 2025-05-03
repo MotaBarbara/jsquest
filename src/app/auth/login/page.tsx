@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Button from "@/src/components/button";
+
 
 const loginFormSchema = z.object({
 	email: z.string().email({ message: 'Enter a valid email address' }),
@@ -28,41 +30,48 @@ export default function Login() {
 		},
 	});
 
-	async function handleLogin(data: LoginFormData) {
-		try {
-			await supabase.auth.signInWithPassword({
-				email: data.email,
-				password: data.password,
-			});
-			toast.success('Login successful!');
-			router.push('/');
-		} catch (error) {
-			console.error(error);
-			toast.error('Error logging in, please try again later.');
-		}
+  async function handleLogin(data: LoginFormData) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
+    if (error) {
+      toast.error(error.message || "Invalid credentials");
+      return;
+    }
+
+    toast.success("Login successful!");
+    router.push("/levels");
 	}
 
 	return (
-		<div>
-			<h1>Login</h1>
-			<form onSubmit={handleSubmit(handleLogin)}>
-				<div>
-					<label htmlFor='email'>Email</label>
-					<input id='email' type='email' {...register('email')} />
-					{errors.email && <p>{errors.email.message}</p>}
-				</div>
+    <main className="h-[100vh] min-h-[700px] flex flex-col items-center justify-center p-6">
+      <h1 className="pb-8 text-center">Login</h1>
+      <form className="auth-form" onSubmit={handleSubmit(handleLogin)}>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input id="email" type="email" {...register("email")} />
+          <div className="text-[var(--danger)]">
+            {errors.email && <p>{errors.email.message}</p>}
+          </div>
+        </div>
 
-				<div>
-					<label htmlFor='password'>Password</label>
-					<input id='password' type='password' {...register('password')} />
-					{errors.password && <p>{errors.password.message}</p>}
-				</div>
-				<Link href='/auth/forgot-password'>
-					<p className='text-blue-600 hover:text-blue-800'>Forgot Password?</p>
-				</Link>
-
-				<button type='submit'>Login</button>
-			</form>
-		</div>
-	);
+        <div>
+          <label htmlFor="password">Password</label>
+          <input id="password" type="password" {...register("password")} />
+          <div className="text-[var(--danger)]">
+            {errors.password && <p>{errors.password.message}</p>}
+          </div>
+        </div>
+        <Button type="submit" variant="primary">
+          Login
+        </Button>
+        <Link href="/auth/forgot-password">
+          <p className="text-[var(--text)] underline underline-offset-3 text-center cursor-pointer">
+            Forgot Password?
+          </p>
+        </Link>
+      </form>
+    </main>
+  );
 }

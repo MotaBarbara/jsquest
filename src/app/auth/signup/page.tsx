@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Button from "@/src/components/button";
+
 
 const signUpFormSchema = z.object({
 	email: z.string().email({ message: 'Enter a valid email address' }),
@@ -50,23 +52,28 @@ export default function Login() {
 	}
 
 	return (
-		<div>
-			<h1>Create Account</h1>
-			<form onSubmit={handleSubmit(handleSignUp)}>
-				<div>
-					<label htmlFor='email'>Email</label>
-					<input id='email' type='email' {...register('email')} />
-					{errors.email && <p>{errors.email.message}</p>}
-				</div>
+    <main className="h-[100vh] min-h-[700px] flex flex-col items-center justify-center p-6">
+      <h1 className="pb-8 text-center">Create Account</h1>
+      <form className="auth-form" onSubmit={handleSubmit(handleSignUp)}>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input id="email" type="email" {...register("email")} />
+					<div className="text-[var(--danger)]">
+						{errors.email && <p>{errors.email.message}</p>}
+					</div>
+        </div>
 
-				<div>
-					<label htmlFor='password'>Password</label>
-					<input id='password' type='password' {...register('password')} />
-					{errors.password && <p>{errors.password.message}</p>}
-				</div>
-
-				<button type='submit'>Create Account</button>
-			</form>
-		</div>
-	);
+        <div>
+          <label htmlFor="password">Password</label>
+          <input id="password" type="password" {...register("password")} />
+					<div className="text-[var(--danger)]">
+						{errors.password && <p>{errors.password.message}</p>}
+					</div>
+        </div>
+        <Button type="submit" variant="primary">
+          Create Account
+        </Button>
+      </form>
+    </main>
+  );
 }

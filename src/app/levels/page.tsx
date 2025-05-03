@@ -1,13 +1,21 @@
 'use client';
 import { supabase } from '@/src/lib/supabaseClient';
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck, LockKeyhole } from "lucide-react";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 interface Level {
 	id: number;
 	title: string;
-	isUnlocked?: boolean;
+	isCompleted?: boolean;
+	percentageDone?: number;
+	inProgress?: number;
+}
+
+interface CircularProgressbarProps {
+  percentageDone: number;
 }
 
 export default function LevelsOverview() {
@@ -49,60 +57,109 @@ export default function LevelsOverview() {
 				setFetchError('Could not fetch completed exercises');
 				return;
 			}
+
 			const completedIds = userCompletedExercises.map(e => e.exercise_id);
+			const uniqueIds = [...new Set(completedIds)].length;
 
-			// exercise w/ highest order
-			exercisesData?.filter(ex => completedIds.includes(ex.id));
+			
+			const inProgressLevel = Math.floor(uniqueIds / 10);
+			const exercisesDonePerLevel = uniqueIds - 10 * inProgressLevel;
 
-			const unlockedLevels = data.map(level => {
-				if (level.id === 0) return true;
+			const percentageDone = exercisesDonePerLevel * 10
 
-				const previousLevelExercises = exercisesData?.filter(ex => ex.level_id === level.id - 1);
-				const allPrevCompleted = previousLevelExercises?.every(ex => completedIds.includes(ex.id));
-
-				return allPrevCompleted;
-			});
-
-			const updatedLevels = data.map((level, index) => ({
-				...level,
-				isUnlocked: unlockedLevels[index],
-			}));
-
+			const updatedLevels = data.map(level => {
+  			const isCompleted = level.id <= inProgressLevel - 1;
+				const inProgress = level.id === inProgressLevel;
+				
+  		return {
+        ...level,
+        isCompleted,
+				inProgress,
+				percentageDone
+      };
+		});
+			
 			setLevels(updatedLevels);
+			
 		}
 		fetchLevels();
 	}, []);
 
-	return (
-		<main>
-			{fetchError && <p>{fetchError}</p>}
-			{levels && levels.length === 0 && <p>No levels found</p>}
-			{levels &&
-				levels.map(level => {
-					const isUnlocked = level.isUnlocked;
 
-					return isUnlocked ? (
-						<Link href={`/exercises/${level.id}`} key={level.id}>
-							<div>
-								<p>
-									Level <span>{level.id}</span>
-								</p>
-								<h2>{level.title}</h2>
-							</div>
-							<CircleCheck />
-						</Link>
-					) : (
-						<div key={level.id}>
-							<div>
-								<p>
-									Level <span>{level.id}</span>
-								</p>
-								<h2>{level.title}</h2>
-							</div>
-							<CircleCheck />
-						</div>
-					);
-				})}
-		</main>
-	);
+	return (
+    <main className="h-[100vh] min-h-[700px] grid grid-cols-[repeat(auto-fit,_minmax(370px,_1fr))] gap-2.5 max-w-7xl m-auto text-center">
+      {fetchError && <p>{fetchError}</p>}
+      {levels && levels.length === 0 && <p>No levels found</p>}
+      {levels &&
+        levels.map(level => {
+          const isCompleted = level.isCompleted;
+          const inProgress = level.inProgress;
+          const percentageDone = level.percentageDone;
+          const levelStructure = (
+            <div className="w-full">
+              <p className="text-sm mb-2 text-[var(--secondary-text)]">
+                Level <span>{level.id}</span>
+              </p>
+              <h2>{level.title}</h2>
+            </div>
+          );
+
+          const ProgressCircle = ({
+            percentageDone = 0,
+          }: CircularProgressbarProps) => {
+            return (
+              <div className="w-12 h-12 ">
+                <CircularProgressbar
+                  value={percentageDone}
+                  text={`${percentageDone}%`}
+                  strokeWidth={8}
+                  styles={buildStyles({
+                    textColor: "var(--text)",
+                    pathColor: "var(--text)",
+                    trailColor: "var(--unavailable-text)",
+                    textSize: "24px",
+                  })}
+                />
+              </div>
+            );
+          };
+
+          if (isCompleted) {
+            return (
+              <Link
+                key={level.id}
+                href={`/exercises/${level.id}`}
+                className="bg-[var(--secondary-color)] px-8 py-10 flex gap-6 h-full"
+              >
+                {levelStructure}
+                <CircleCheck size={40} strokeWidth={1.5} />
+              </Link>
+            );
+          }
+
+          if (inProgress) {
+            return (
+              <Link
+                key={level.id}
+                href={`/exercises/${level.id}`}
+                className="bg-[var(--primary-color)] px-8 py-10 flex gap-6 h-full items-start"
+              >
+                {levelStructure}
+                <ProgressCircle percentageDone={percentageDone ?? 0} />
+              </Link>
+            );
+          }
+
+          return (
+            <div
+              key={level.id}
+              className="bg-[var(--secondary-background)] px-8 py-10 flex gap-6 h-full cursor-not-allowed"
+            >
+              {levelStructure}
+              <LockKeyhole size={40} strokeWidth={1.5} />
+            </div>
+          );
+        })}
+    </main>
+  );
 }

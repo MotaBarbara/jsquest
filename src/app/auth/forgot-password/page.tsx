@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
+import Button from '@/src/components/button';
 
 export default function ForgotPassword() {
 	const [email, setEmail] = useState('');
@@ -24,19 +25,24 @@ export default function ForgotPassword() {
 	}
 
 	return (
-		<div>
-			<h1>Forgot Password</h1>
-			<form onSubmit={handleForgotPassword}>
-				<div>
-					<label htmlFor='email'>Email</label>
-					<input type='email' id='email' value={email} onChange={e => setEmail(e.target.value)} placeholder='Enter your email' />
-				</div>
+    <main className="h-[100vh] min-h-[700px] flex flex-col items-center justify-center p-6">
+      <h1 className="pb-8 text-center">Forgot Password</h1>
+      <form className="auth-form" onSubmit={handleForgotPassword}>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Enter your email"
+          />
+        </div>
 
-				{message && <p>{message}</p>}
-				{error && <p>{error}</p>}
-
-				<button type='submit'>Request new password</button>
-			</form>
-		</div>
-	);
+        <Button type="submit">Request new password</Button>
+        {message && <p className="text-[var(--success)]">{message}</p>}
+        {error && <p className="text-[var(--danger)]">{error}</p>}
+      </form>
+    </main>
+  );
 }

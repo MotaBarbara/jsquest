@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background-color: #212123;
+  --text: #F6F6F6;
+  --primary-color: #7858c3;
+  --secondary-color: #4d3d73;
+  --secondary-background: #2a2a2b;
+  --secondary-text: #d6d6d6;
+  --unavailable-text: #979797;
+  --danger: #E65454;
+  --success: #1CAE82;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--background-color);
+  --color-foreground: var(--text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background-color: #212123;
+    --text: #F6F6F6;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--background-color);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 120%;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 120%;
+
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 120%;
+
+}
+
+input{
+  height: 3rem;
+  border: var(--text) 1px solid;
+  padding: 1rem;
+}
+.auth-form{
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+main{
+  padding: 3rem;
+  padding-top: 6rem
 }

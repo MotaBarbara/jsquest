@@ -87,7 +87,7 @@ export default function LevelsOverview() {
 
 
 	return (
-    <main className="h-[100vh] min-h-[700px] grid grid-cols-[repeat(auto-fit,_minmax(370px,_1fr))] gap-2.5 max-w-7xl m-auto text-center">
+    <main className="h-[100vh] min-h-[700px] grid grid-cols-[repeat(auto-fit,_minmax(370px,_1fr))] gap-2.5 max-w-7xl m-auto">
       {fetchError && <p>{fetchError}</p>}
       {levels && levels.length === 0 && <p>No levels found</p>}
       {levels &&

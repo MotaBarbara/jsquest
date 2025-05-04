@@ -3,10 +3,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { supabase } from '@/src/lib/supabaseClient';
 import { z } from 'zod';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Button from "@/src/components/button";
+import { useState } from 'react';
+
 
 
 const loginFormSchema = z.object({
@@ -17,11 +18,11 @@ const loginFormSchema = z.object({
 type LoginFormData = z.infer<typeof loginFormSchema>;
 
 export default function Login() {
+  const [message, setMessage] = useState('')
 	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
 	} = useForm({
 		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
@@ -31,16 +32,14 @@ export default function Login() {
 	});
 
   async function handleLogin(data: LoginFormData) {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
       email: data.email,
       password: data.password,
     });
-    if (error) {
-      toast.error(error.message || "Invalid credentials");
+    if (error || !authData?.session) {
+      setMessage("Invalid credentials, please try again");
       return;
     }
-
-    toast.success("Login successful!");
     router.push("/levels");
 	}
 
@@ -51,17 +50,12 @@ export default function Login() {
         <div>
           <label htmlFor="email">Email</label>
           <input id="email" type="email" {...register("email")} />
-          <div className="text-[var(--danger)]">
-            {errors.email && <p>{errors.email.message}</p>}
-          </div>
         </div>
 
         <div>
           <label htmlFor="password">Password</label>
           <input id="password" type="password" {...register("password")} />
-          <div className="text-[var(--danger)]">
-            {errors.password && <p>{errors.password.message}</p>}
-          </div>
+          <div className="text-[var(--danger)]">{message && message}</div>
         </div>
         <Button type="submit" variant="primary">
           Login

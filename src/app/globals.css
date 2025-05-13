@@ -1,16 +1,15 @@
 @import "tailwindcss";
 
-
 :root {
   --background-color: #212123;
-  --text: #F6F6F6;
+  --text: #f6f6f6;
   --primary-color: #7858c3;
   --secondary-color: #4d3d73;
   --secondary-background: #2a2a2b;
   --secondary-text: #d6d6d6;
   --unavailable-text: #979797;
-  --danger: #E65454;
-  --success: #1CAE82;
+  --danger: #e65454;
+  --success: #1cae82;
 }
 
 @theme inline {
@@ -22,7 +21,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: #212123;
-    --text: #F6F6F6;
+    --text: #f6f6f6;
   }
 }
 body {
@@ -40,39 +39,37 @@ h3 {
   font-size: 1.15rem;
   font-weight: 600;
   line-height: 120%;
-
 }
 
 h1 {
   font-size: 2rem;
   font-weight: 600;
   line-height: 120%;
-
 }
 
-.h1-lp{
+.h1-lp {
   font-size: 4rem;
   line-height: 110%;
 }
 
-.h2-lp{
+.h2-lp {
   font-size: 3rem;
 }
 
-.h3-lp{
+.h3-lp {
   font-size: 2rem;
 }
 
-p{
+p {
   font-size: 1rem;
 }
 
-input{
+input {
   height: 3rem;
   border: var(--text) 1px solid;
   padding: 1rem;
 }
-.auth-form{
+.auth-form {
   width: 100%;
   max-width: 30rem;
   display: flex;
@@ -85,9 +82,19 @@ form div {
   flex-direction: column;
   gap: 0.5rem;
 }
-main{
+main {
   max-width: 80rem;
   margin: auto;
   padding: 3rem;
   padding-top: 6rem;
+}
+.swiper-pagination {
+  position: relative !important;
+  margin-top: 2rem;
+}
+.swiper-pagination-bullet {
+  background-color: var(--unavailable-text) !important;
+}
+.swiper-pagination-bullet-active {
+  background-color: var(--primary-color) !important;
 }

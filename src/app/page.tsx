@@ -1,8 +1,32 @@
 import Button from "../components/button";
 import TypewriterEffect from "../components/changingHeadline";
 import HorizontalScrollSection from "../components/horizontalScrollSection";
+import Testimonials from "../components/testimonials";
+
 import Link from "next/link";
 
+const testimonialsData = [
+  {
+    quote:
+      "This platform made learning JavaScript addictive. The level-based challenges kept me motivated.",
+    author: "Jamie L., aspiring front-end developer",
+  },
+  {
+    quote:
+      "It felt like a game, not a class. I actually look forward to learning now.",
+    author: "Taylor M., bootcamp student",
+  },
+  {
+    quote:
+      "This platform made learning JavaScript addictive. The level-based challenges kept me motivated.",
+    author: "Jamie L., aspiring front-end developer",
+  },
+  {
+    quote:
+      "It felt like a game, not a class. I actually look forward to learning now.",
+    author: "Taylor M., bootcamp student",
+  },
+];
 
 export default function Home() {
   return (
@@ -33,17 +57,10 @@ export default function Home() {
             <HorizontalScrollSection />
           </div>
         </section>
-        <section>
+        <section className="py-80 text-center">
           <div>
-            <h2>
-              “This platform made learning JavaScript addictive. The level-based
-              challenges kept me motivated, and the leaderboard pushed me to
-              going. I went from zero to building real projects in just a few
-              weeks.
-            </h2>
-            <p>— Jamie L., aspiring front-end developer</p>
+            <Testimonials testimonials={testimonialsData} />
           </div>
-          <Button href="/auth/login">Get started</Button>
         </section>
         <section>
           <div>

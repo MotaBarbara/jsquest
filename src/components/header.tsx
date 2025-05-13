@@ -81,7 +81,7 @@ export default function Header() {
 	
    return (
      <header className="fixed w-full">
-       <nav className="flex justify-between items-center py-4 px-6">
+       <nav className="flex justify-between items-center py-4 px-12 m-auto max-w-[80rem]">
          <Link href="/pages/levels">
            <Image src={Logo} alt="JS Quest Logo" width={100} height={100} />{" "}
          </Link>

@@ -20,7 +20,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "px-8 py-3 transition-colors duration-200 inline-block text-center cursor-pointer w-full max-w-300";
+    "px-8 py-3 transition-colors duration-200 inline-block text-center cursor-pointer w-full max-w-300 whitespace-nowrap";
 
   const variants = {
     primary: "bg-[var(--primary-color)] text-white hover:bg-[#60469C]",

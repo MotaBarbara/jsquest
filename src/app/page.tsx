@@ -1,96 +1,72 @@
 import Button from "../components/button";
-import Header from "../components/header";
+import TypewriterEffect from "../components/changingHeadline";
+import HorizontalScrollSection from "../components/horizontalScrollSection";
+import Link from "next/link";
+
 
 export default function Home() {
   return (
     <>
-      <Header />
-      <main>
-        <section>
+      <main className="!pt-0">
+        <section className="h-[100vh] min-h-[600px] max-h-[840px] flex flex-col justify-center items-center text-center gap-4 max-w-[46rem] m-auto">
           <p>The Ultimate JavaScript Challenge Platform</p>
-          <h1>Master JavaScript Become a [developer]</h1>
+          <h1 className="h1-lp">
+            <span className="block">Master JavaScript</span>
+            <span>
+              <TypewriterEffect />
+            </span>
+          </h1>
           <p>
             Level up your JavaScript skills through interactive challenges,
             structured progression, and monthly competitions - learning made
             fun, focused, and fiercely competitive.
           </p>
-          <div>
+          <div className="flex gap-2 mt-16">
             <Button href="/auth/login">Get started</Button>
             <Button href="/auth/login" variant="secondary">
               How it works
             </Button>
           </div>
         </section>
-        <section>
-          <p>The Ultimate JavaScript Challenge Platform</p>
-          <h2></h2>
-          <div className="">
-            <img src="" alt="" />
-            <div>
-              <h3>Sign Up & Start</h3>
-              <p>
-                Create your free account and dive into your first challenge in
-                seconds - no setup, no fluff.
-              </p>
-            </div>
-          </div>
-          <div className="">
-            <img src="" alt="" />
-            <div>
-              <h3>Complete Level-Based Challenges</h3>
-              <p>
-                Progress through structured JavaScript exercises, one level at a
-                time - no skipping allowed, mastery required.
-              </p>
-            </div>
-          </div>
-          <div className="">
-            <img src="" alt="" />
-            <div>
-              <h3>Track Success & Climb the Ranks</h3>
-              <p>
-                Get instant feedback, track your growth, and see how you stack
-                up with detailed progress metrics.
-              </p>
-            </div>
-          </div>
-          <div className="">
-            <img src="" alt="" />
-            <div>
-              <h3>Join the Leaderboard</h3>
-              <p>
-                Compete in monthly rankings, earn your spot at the top, and show
-                the world your JavaScript skills.
-              </p>
-            </div>
+        <section className="h-[300vh] relative">
+          <div className="sticky top-40 h-screen overflow-hidden">
+            <HorizontalScrollSection />
           </div>
         </section>
         <section>
-          <h2>Testimonial does here</h2>
+          <div>
+            <h2>
+              “This platform made learning JavaScript addictive. The level-based
+              challenges kept me motivated, and the leaderboard pushed me to
+              going. I went from zero to building real projects in just a few
+              weeks.
+            </h2>
+            <p>— Jamie L., aspiring front-end developer</p>
+          </div>
           <Button href="/auth/login">Get started</Button>
         </section>
         <section>
           <div>
-            <a href="">Gamified Progression</a>
-            <a href="">Monthly Rankings</a>
-            <a href="">Success Metrics</a>
-            <a href="">Secure Login</a>
+            <Link href="">Gamified Progression</Link>
+            <Link href="">Monthly Rankings</Link>
+            <Link href="">Success Metrics</Link>
+            <Link href="">Secure Login</Link>
           </div>
           <div>
             <div>
-              <img src="" alt="" />
+              {/* <img src="" alt="" /> */}
               <p>10 challenges per level. No skipping, earn your way up.</p>
             </div>
             <div>
-              <img src="" alt="" />
+              {/* <img src="" alt="" /> */}
               <p>Climb the leaderboard and compete every month.</p>
             </div>
             <div>
-              <img src="" alt="" />
+              {/* <img src="" alt="" /> */}
               <p>Track your progress, accuracy, and streaks.</p>
             </div>
             <div>
-              <img src="" alt="" />
+              {/* <img src="" alt="" /> */}
               <p>Save progress and sync across all devices.</p>
             </div>
           </div>
@@ -101,7 +77,7 @@ export default function Home() {
         </section>
       </main>
       <section>
-        <img src="" alt="js quest logotype" />
+        {/* <img src="" alt="js quest logotype" /> */}
         <div>
           <a href="">How It Works</a>
           <a href="">Testimonials</a>

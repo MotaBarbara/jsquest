@@ -1,4 +1,3 @@
-// ChangingHeadline.tsx
 "use client";
 import { useEffect, useState } from "react";
 
@@ -25,7 +24,7 @@ export default function TypewriterEffect() {
           setDisplayed(currentMessage.slice(0, displayed.length + 1));
         }, 60);
       } else {
-        timeout = setTimeout(() => setTyping(false), 1000); // pause before deleting
+        timeout = setTimeout(() => setTyping(false), 1000);
       }
     } else {
       if (displayed.length > 0) {

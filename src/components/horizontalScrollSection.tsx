@@ -5,8 +5,7 @@ import signupImage from "../assets/process-signup.avif";
 import journeyImage from "../assets/process-journey.avif";
 import trackImage from "../assets/process-track.avif";
 import leaderboardImage from "../assets/process-leaderboard.avif";
-import ProcessStep
-  from "./processStep";
+import ProcessStep from "./processStep";
 export default function HorizontalScrollSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
@@ -35,7 +34,9 @@ export default function HorizontalScrollSection() {
     <section ref={sectionRef} className="h-[300vh] relative">
       <div className="sticky top-0 h-screen overflow-hidden flex flex-col">
         <div className="max-w-120 text-center mx-auto mb-16">
-          <h2>The Ultimate JavaScript Challenge Platform</h2>
+          <h2 className="h2-lp mb-3">
+            The Ultimate JavaScript Challenge Platform
+          </h2>
           <p>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla
             repellat aperiam rerum dolor exercitationem?

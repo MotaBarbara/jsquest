@@ -27,7 +27,7 @@ export default function Testimonials({ testimonials = [] }: TestimonialsProps) {
       {testimonials.map((testimonial, index) => (
         <SwiperSlide key={index} className="">
           <blockquote className="max-w-140 m-auto">
-            <h2 className="mb-8">“{testimonial.quote}”</h2>
+            <h2 className="mb-6 h2-lp">“{testimonial.quote}”</h2>
             <footer>— {testimonial.author}</footer>
           </blockquote>
         </SwiperSlide>

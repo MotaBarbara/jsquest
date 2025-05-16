@@ -1,9 +1,8 @@
 import Button from "../components/button";
 import TypewriterEffect from "../components/changingHeadline";
+import Functionalities from "../components/functionalities";
 import HorizontalScrollSection from "../components/horizontalScrollSection";
 import Testimonials from "../components/testimonials";
-
-import Link from "next/link";
 
 const testimonialsData = [
   {
@@ -63,30 +62,7 @@ export default function Home() {
           </div>
         </section>
         <section>
-          <div>
-            <Link href="">Gamified Progression</Link>
-            <Link href="">Monthly Rankings</Link>
-            <Link href="">Success Metrics</Link>
-            <Link href="">Secure Login</Link>
-          </div>
-          <div>
-            <div>
-              {/* <img src="" alt="" /> */}
-              <p>10 challenges per level. No skipping, earn your way up.</p>
-            </div>
-            <div>
-              {/* <img src="" alt="" /> */}
-              <p>Climb the leaderboard and compete every month.</p>
-            </div>
-            <div>
-              {/* <img src="" alt="" /> */}
-              <p>Track your progress, accuracy, and streaks.</p>
-            </div>
-            <div>
-              {/* <img src="" alt="" /> */}
-              <p>Save progress and sync across all devices.</p>
-            </div>
-          </div>
+          <Functionalities />
         </section>
         <section>
           <h2>Start mastering JavaScript today, it’s free!</h2>

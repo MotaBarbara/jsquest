@@ -3,6 +3,8 @@ import TypewriterEffect from "../components/changingHeadline";
 import Functionalities from "../components/functionalities";
 import HorizontalScrollSection from "../components/horizontalScrollSection";
 import Testimonials from "../components/testimonials";
+import Image from "next/image";
+import Logo from "@/src/assets/js-quest-logo.svg";
 
 const testimonialsData = [
   {
@@ -64,19 +66,28 @@ export default function Home() {
         <section>
           <Functionalities />
         </section>
-        <section>
-          <h2>Start mastering JavaScript today, it’s free!</h2>
-          <Button href="/auth/login">Get started</Button>
+        <section className="p-8 pt-32 bg-[var(--primary-color)] flex flex-col items-start">
+          <h2 className="h2-lp mb-6 max-w-95">
+            Start mastering JavaScript today, it’s free!
+          </h2>
+          <div className="flex gap-8 items-center">
+            <Button href="/auth/login" variant="tertiary">
+              Get started
+            </Button>
+            <Button href="/auth/login" variant="link">
+              Functionalities
+            </Button>
+          </div>
         </section>
       </main>
-      <section>
-        {/* <img src="" alt="js quest logotype" /> */}
-        <div>
+      <footer className="flex flex-col items-center px-4 py-12 border-t-1 border-[var(--unavailable-text)] mt-8">
+        <Image src={Logo} alt="JS Quest Logo" width={100} height={100} />{" "}
+        <div className="mt-4 flex gap-6">
           <a href="">How It Works</a>
-          <a href="">Testimonials</a>
           <a href="">Features & Benefits</a>
+          <a href="">Testimonials</a>
         </div>
-      </section>
+      </footer>
     </>
   );
 }

@@ -1,11 +1,17 @@
 "use client";
-import Link  from "next/link";
+import Link from "next/link";
 import { ReactNode } from "react";
 
-interface ButtonProps{
+interface ButtonProps {
   href?: string;
   children: ReactNode;
-  variant?: "primary" | "secondary" | "disabled" | "danger";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "tertiary"
+    | "link"
+    | "disabled"
+    | "danger";
   className?: string;
   type?: "button" | "submit";
   onClick?: () => void;
@@ -25,6 +31,9 @@ export default function Button({
   const variants = {
     primary: "bg-[var(--primary-color)] text-white hover:bg-[#60469C]",
     secondary: "bg-[var(--secondary-color)] text-white hover:bg-[#71648F]",
+    tertiary:
+      "bg-[var(--background-color)] text-[var(--text)] hover:bg-[var(--secondary-background)]]",
+    link: "px-0! py-0! text-[var(--text)] items-center",
     disabled:
       "bg-gray-500 text-gray-300 cursor-not-allowed pointer-events-none",
     danger:
@@ -48,11 +57,11 @@ export default function Button({
   if (href) {
     return (
       <Link href={href} className={styles} {...props}>
-         {children}
+        {children}
       </Link>
     );
   }
-  
+
   return (
     <button className={styles} {...props}>
       {children}

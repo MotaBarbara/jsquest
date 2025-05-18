@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from "next/image";
 import signupImage from "../assets/process-signup.avif";
 import journeyImage from "../assets/process-journey.avif";
 import trackImage from "../assets/process-track.avif";
 import leaderboardImage from "../assets/process-leaderboard.avif";
 
 import Link from "next/link";
+import Functionality from "./functionality";
 
 function useActiveSection() {
   useEffect(() => {
@@ -44,7 +44,7 @@ function useActiveSection() {
 export default function Functionalities() {
   useActiveSection();
   return (
-    <div className="flex relative items-start">
+    <div className="grid grid-cols-[1fr_2fr] relative items-start">
       <div className="flex flex-col sticky top-32">
         <Link
           href="#gamification"
@@ -75,23 +75,43 @@ export default function Functionalities() {
           Secure Login
         </Link>
       </div>
-      <div>
-        <div className="h-[100vh] px-16 py-32" id="gamification">
-          <Image src={signupImage} alt="" />
-          <p>10 challenges per level. No skipping, earn your way up.</p>
-        </div>
-        <div className="h-[100vh] px-16 py-32" id="ranking">
-          <Image src={journeyImage} alt="" />
-          <p>Climb the leaderboard and compete every month.</p>
-        </div>
-        <div className="h-[100vh] px-16 py-32" id="metrics">
-          <Image src={trackImage} alt="" />
-          <p>Track your progress, accuracy, and streaks.</p>
-        </div>
-        <div className="h-[100vh] px-16 py-32" id="login">
-          <Image src={leaderboardImage} alt="" />
-          <p>Save progress and sync across all devices.</p>
-        </div>
+      <div className="flex flex-col gap-8">
+        <Functionality
+          id="gamification"
+          src={signupImage}
+          altText=""
+          heading="10 challenges per level. No skipping, earn your way up."
+          description="Master each concept with ten bite-sized, interactive challenges per
+            level. No skipping ahead—earn your progress and build a solid
+            foundation, one level at a time."
+        />
+        <Functionality
+          id="ranking"
+          src={journeyImage}
+          altText=""
+          heading="Climb the leaderboard and compete every month."
+          description="Rise through the ranks by completing challenges and earning points.
+            Compete with users around the world each month and claim your spot
+            at the top of the leaderboard."
+        />
+        <Functionality
+          id="metrics"
+          src={trackImage}
+          altText=""
+          heading="Track your progress, accuracy, and streaks."
+          description="Stay motivated by tracking your learning journey. Monitor your
+            challenge accuracy, daily streaks, and level progression—all in one
+            place."
+        />
+        <Functionality
+          id="login"
+          src={leaderboardImage}
+          altText=""
+          heading="Save progress and sync across all devices."
+          description="Never lose your progress. Your learning is automatically saved and
+            seamlessly synced across all your devices—start on your phone,
+            continue on your laptop."
+        />
       </div>
     </div>
   );

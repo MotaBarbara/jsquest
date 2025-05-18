@@ -1,3 +1,4 @@
+"use client";
 import Button from "../components/button";
 import TypewriterEffect from "../components/changingHeadline";
 import Functionalities from "../components/functionalities";
@@ -5,6 +6,7 @@ import HorizontalScrollSection from "../components/horizontalScrollSection";
 import Testimonials from "../components/testimonials";
 import Image from "next/image";
 import Logo from "@/src/assets/js-quest-logo.svg";
+import { useState, useEffect } from "react";
 
 const testimonialsData = [
   {
@@ -30,6 +32,13 @@ const testimonialsData = [
 ];
 
 export default function Home() {
+  const [year, setYear] = useState<number>(0);
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    setYear(currentYear);
+  }, []);
+
   return (
     <>
       <main className="!pt-0">
@@ -58,12 +67,12 @@ export default function Home() {
             <HorizontalScrollSection />
           </div>
         </section>
-        <section className="py-80 text-center">
+        <section className="py-40 text-center">
           <div>
             <Testimonials testimonials={testimonialsData} />
           </div>
         </section>
-        <section>
+        <section className="py-32 px-8">
           <Functionalities />
         </section>
         <section className="p-8 pt-32 bg-[var(--primary-color)] flex flex-col items-start">
@@ -74,7 +83,7 @@ export default function Home() {
             <Button href="/auth/login" variant="tertiary">
               Get started
             </Button>
-            <Button href="/auth/login" variant="link">
+            <Button href="#gamification" variant="link">
               Functionalities
             </Button>
           </div>
@@ -87,6 +96,7 @@ export default function Home() {
           <a href="">Features & Benefits</a>
           <a href="">Testimonials</a>
         </div>
+        <p className="mt-4">{year} © JSQuest</p>
       </footer>
     </>
   );

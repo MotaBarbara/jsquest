@@ -15,8 +15,10 @@ export default function ProcessStep({
   description,
 }: ProcessStepProps) {
   return (
-    <div className="flex items-end gap-8 w-200">
-      <Image src={src} alt={altText} width={400} height={320} />
+    <div className="flex items-end gap-6 w-[100vh] bg-[var(--secondary-background)] p-6">
+      <div className="w-[50vh] h-[40vh] min-w-[50vh] relative">
+        <Image src={src} alt={altText} fill style={{ objectFit: "cover" }} />
+      </div>
       <div className="flex flex-col gap-2">
         <h3>{heading}</h3>
         <p>{description}</p>

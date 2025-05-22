@@ -99,3 +99,14 @@ main {
 .swiper-pagination-bullet-active {
   background-color: var(--primary-color) !important;
 }
+.editInput {
+  -webkit-text-fill-color: #959595 !important;
+  border: #555 1px solid;
+  transition: background-color 5000s ease-in-out 0s;
+}
+.input-default {
+  box-shadow: 0 0 0px 1000px #353535 inset !important;
+}
+.input-filled {
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+}

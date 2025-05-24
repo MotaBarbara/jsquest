@@ -83,7 +83,7 @@ export default function Ranking() {
               position={index + 1}
               initials={initials}
               user={first_name}
-              level={highestLevel !== null ? String(highestLevel) : null}
+              level={String(highestLevel ?? 0)}
               score={score}
             />
           ))}

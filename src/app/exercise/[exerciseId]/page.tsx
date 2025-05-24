@@ -1,21 +1,21 @@
-'use client';
-import { supabase } from '@/src/lib/supabaseClient';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { FormEvent } from 'react';
-import Button from '@/src/components/button';
+"use client";
+import { supabase } from "@/src/lib/supabaseClient";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { FormEvent } from "react";
+import Button from "@/src/components/button";
 
 interface Exercise {
-	id: string;
-	level_id: number;
-	title: string;
-	instruction: string;
-	options: string[];
-	correct_answers: number[];
-	order: number;
+  id: string;
+  level_id: number;
+  title: string;
+  instruction: string;
+  options: string[];
+  correct_answers: number[];
+  order: number;
 }
 interface Level {
-	title: string;
+  title: string;
 }
 
 export default function ExercisesOverview() {
@@ -57,6 +57,8 @@ export default function ExercisesOverview() {
             .gt('"order"', exerciseData.order)
             .order('"order"', { ascending: true })
             .limit(1);
+
+        console.log(nextExerciseData);
 
         if (nextExerciseError) {
           setFetchError("Could not fetch the next exercise");
@@ -110,10 +112,14 @@ export default function ExercisesOverview() {
           user_id: user.data.user.id,
           exercise_id: exercise?.id,
           is_correct: isAnswerCorrect,
+          level: exercise?.level_id,
+          exercise_order: exercise?.order,
         },
       ]);
     }
   }
+
+  console.log(level);
 
   // save the selected value, clear previous answer
   function optionSelected(
@@ -173,7 +179,7 @@ export default function ExercisesOverview() {
   } else if (selectedOptions.length > 0) {
     buttonText = "Submit Options";
     buttonLink = undefined;
-    buttonVariant = "primary"; 
+    buttonVariant = "primary";
   } else {
     // default
     buttonText = "Submit Options";

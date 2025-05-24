@@ -3,7 +3,7 @@ import { supabase } from "@/src/lib/supabaseClient";
 import Button from "@/src/components/button";
 import { useState, useEffect } from "react";
 import { Pen } from "lucide-react";
-import { FetchInitials } from "@/src/utils/FetchInitials";
+import { FetchInitials } from "@/src/utils/fetchInitials";
 
 export default function UpdateUser() {
   const [firstName, setFirstName] = useState("");

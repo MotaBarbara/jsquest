@@ -72,10 +72,10 @@ export default function Home() {
             <Testimonials testimonials={testimonialsData} />
           </div>
         </section>
-        <section className="py-32 px-8">
+        <section className="py-32">
           <Functionalities />
         </section>
-        <section className="p-8 pt-32 bg-[var(--primary-color)] flex flex-col items-start">
+        <section className="px-8 pt-32 pb-8 bg-[var(--primary-color)] flex flex-col items-start">
           <h2 className="h2-lp mb-6 max-w-95">
             Start mastering JavaScript today, it’s free!
           </h2>
@@ -89,7 +89,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col items-center px-4 py-12 border-t-1 border-[var(--unavailable-text)] mt-8">
+      <footer className="flex flex-col items-center px-0 md:px- py-12 border-t-1 border-[var(--unavailable-text)] mt-8">
         <Image src={Logo} alt="JS Quest Logo" width={100} height={100} />{" "}
         <div className="mt-4 flex gap-6">
           <a href="">How It Works</a>

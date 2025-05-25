@@ -1,4 +1,6 @@
 "use client";
+import Image from "next/image";
+
 interface RankingProps {
   initials: string | null;
   user: string;
@@ -6,6 +8,7 @@ interface RankingProps {
   score: number | null;
   position: number;
   currentUser?: boolean;
+  avatar: string | null;
 }
 
 export default function RankingRow({
@@ -15,6 +18,7 @@ export default function RankingRow({
   level,
   score,
   currentUser,
+  avatar,
 }: RankingProps) {
   return (
     <div
@@ -26,8 +30,18 @@ export default function RankingRow({
     >
       <div className="flex items-center gap-4">
         <p className="text-3xl">{position}</p>
-        <div className="bg-[var(--primary-color)] rounded-full size-10 flex justify-center items-center">
-          {initials}
+        <div className="bg-[var(--primary-color)] rounded-full size-10 flex justify-center items-center overflow-hidden">
+          {avatar ? (
+            <Image
+              src={avatar}
+              alt={user}
+              width={40}
+              height={40}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            initials
+          )}
         </div>
         <div>
           <p>{user}</p>

@@ -11,6 +11,7 @@ type UserRanking = {
   initials: string | null;
   highestLevel: number | null;
   score: number;
+  avatar: string | null;
 };
 
 export default function Ranking() {
@@ -66,6 +67,7 @@ export default function Ranking() {
             .order("level", { ascending: false });
 
           const highestLevel = levels?.[0]?.level ?? null;
+          console.log(user.avatar_url);
 
           return {
             id: user.id,
@@ -73,6 +75,7 @@ export default function Ranking() {
             initials,
             highestLevel,
             score: totalScore ?? 0,
+            avatar: user.avatar_url,
           };
         }),
       );
@@ -87,27 +90,33 @@ export default function Ranking() {
       <div className="w-full">
         {[...ranking]
           .sort((a, b) => b.score - a.score)
-          .map(({ id, initials, first_name, highestLevel, score }, index) =>
-            currentUserId === id ? (
-              <RankingRow
-                key={id}
-                position={(page - 1) * 10 + index + 1}
-                initials={initials}
-                user={first_name}
-                level={highestLevel !== null ? String(highestLevel) : null}
-                score={score}
-              />
-            ) : (
-              <RankingRow
-                key={id}
-                position={(page - 1) * 10 + index + 1}
-                initials={initials}
-                user={first_name}
-                level={highestLevel !== null ? String(highestLevel) : null}
-                score={score}
-                currentUser={true}
-              />
-            ),
+          .map(
+            (
+              { id, initials, first_name, highestLevel, score, avatar },
+              index,
+            ) =>
+              currentUserId === id ? (
+                <RankingRow
+                  key={id}
+                  position={(page - 1) * 10 + index + 1}
+                  initials={initials}
+                  user={first_name}
+                  level={highestLevel !== null ? String(highestLevel) : null}
+                  score={score}
+                  avatar={avatar}
+                />
+              ) : (
+                <RankingRow
+                  key={id}
+                  position={(page - 1) * 10 + index + 1}
+                  initials={initials}
+                  user={first_name}
+                  level={highestLevel !== null ? String(highestLevel) : null}
+                  score={score}
+                  currentUser={true}
+                  avatar={avatar}
+                />
+              ),
           )}
       </div>
       <div className="mt-5 flex gap-4">

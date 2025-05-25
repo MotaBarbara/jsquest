@@ -2,6 +2,8 @@
 import RankingRow from "@/src/components/rankingRow";
 import { supabase } from "@/src/lib/supabaseClient";
 import { useEffect, useState } from "react";
+import { Pagination } from "@/src/lib/pagination";
+// import Pagination from "@/app/ui/invoices/pagination";
 
 type UserRanking = {
   id: string;
@@ -13,20 +15,29 @@ type UserRanking = {
 
 export default function Ranking() {
   const [ranking, setRanking] = useState<UserRanking[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentUserId, setCurrentUserId] = useState("");
 
   useEffect(() => {
     async function fetchRankings() {
-      // Get all users id and first_name
-      const { data: userInfoData, error: userInfoError } = await supabase
-        .from("profiles")
-        .select("id, first_name, last_name");
+      // get current user
+      const { data: currentUser } = await supabase.auth.getUser();
+      if (!currentUser.user) {
+        return;
+      }
+      setCurrentUserId(currentUser.user.id);
 
-      if (userInfoError || !userInfoData) {
-        console.error("Error fetching users:", userInfoError);
+      // get pagination and all users id and first_name
+      const { data: profiles, totalPages } = await Pagination(page);
+      setTotalPages(totalPages);
+
+      if (!profiles) {
+        console.error("No data existing");
         return;
       }
       const rankingData = await Promise.all(
-        userInfoData.map(async user => {
+        profiles.map(async user => {
           // get initials
           const initials = (
             (user.first_name?.[0] ?? "") + (user.last_name?.[0] ?? "")
@@ -53,7 +64,6 @@ export default function Ranking() {
             .eq("user_id", user.id)
             .not("level", "is", null)
             .order("level", { ascending: false });
-          // .limit(1);
 
           const highestLevel = levels?.[0]?.level ?? null;
 
@@ -69,7 +79,7 @@ export default function Ranking() {
       setRanking(rankingData);
     }
     fetchRankings();
-  }, []);
+  }, [page]);
 
   return (
     <main className="flex flex-col gap-10 items-center">
@@ -77,16 +87,45 @@ export default function Ranking() {
       <div className="w-full">
         {[...ranking]
           .sort((a, b) => b.score - a.score)
-          .map(({ id, initials, first_name, highestLevel, score }, index) => (
-            <RankingRow
-              key={id}
-              position={index + 1}
-              initials={initials}
-              user={first_name}
-              level={String(highestLevel ?? 0)}
-              score={score}
-            />
-          ))}
+          .map(({ id, initials, first_name, highestLevel, score }, index) =>
+            currentUserId === id ? (
+              <RankingRow
+                key={id}
+                position={(page - 1) * 10 + index + 1}
+                initials={initials}
+                user={first_name}
+                level={highestLevel !== null ? String(highestLevel) : null}
+                score={score}
+              />
+            ) : (
+              <RankingRow
+                key={id}
+                position={(page - 1) * 10 + index + 1}
+                initials={initials}
+                user={first_name}
+                level={highestLevel !== null ? String(highestLevel) : null}
+                score={score}
+                currentUser={true}
+              />
+            ),
+          )}
+      </div>
+      <div className="mt-5 flex gap-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+        >
+          Previous
+        </button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+        >
+          Next
+        </button>
       </div>
     </main>
   );

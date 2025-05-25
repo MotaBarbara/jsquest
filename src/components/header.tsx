@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, LogOut } from "lucide-react";
 import Button from "./button";
 import { usePathname } from "next/navigation";
+import { FetchAvatar } from "../utils/fetchAvatar";
 
 interface User {
   email: string;
@@ -24,6 +25,7 @@ export default function Header() {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  const [avatar, setAvatar] = useState("");
 
   useEffect(() => {
     async function fetchUser() {
@@ -62,6 +64,15 @@ export default function Header() {
         setUser(null);
       }
     });
+
+    //get avatar
+
+    async function loadAvatar() {
+      const avatarUrl = await FetchAvatar();
+      setAvatar(avatarUrl || "");
+    }
+    loadAvatar();
+    console.log(avatar);
   }, []);
 
   async function signOut() {
@@ -96,10 +107,19 @@ export default function Header() {
             >
               {pathname !== "/auth/reset-password" && (
                 <>
-                  <div className="rounded-full size-9.5 object-cover bg-[var(--primary-color)] text-[var(--text)] flex justify-center items-center pt-1 mb-1">
-                    {initials}
+                  <div className="rounded-full size-9.5 object-cover bg-[var(--primary-color)] text-[var(--text)] flex justify-center items-center mb-1 overflow-hidden">
+                    {avatar ? (
+                      <Image
+                        src={avatar}
+                        alt="your profile image"
+                        width={50}
+                        height={50}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      initials
+                    )}
                   </div>
-
                   <div className="flex flex-col">
                     <span className="text-[var(--text)] text-sm font-medium">
                       {userInfo?.first_name} {userInfo?.last_name}

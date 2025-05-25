@@ -5,6 +5,7 @@ interface RankingProps {
   level: string | null;
   score: number | null;
   position: number;
+  currentUser?: boolean;
 }
 
 export default function RankingRow({
@@ -13,9 +14,16 @@ export default function RankingRow({
   user,
   level,
   score,
+  currentUser,
 }: RankingProps) {
   return (
-    <div className="flex bg-[var(--secondary-background)]  items-center justify-between w-full p-4 m-1">
+    <div
+      className={`flex ${
+        currentUser
+          ? "bg-[var(--secondary-background)]"
+          : "bg-[var(--secondary-color)]"
+      }   items-center justify-between w-full p-4 m-1`}
+    >
       <div className="flex items-center gap-4">
         <p className="text-3xl">{position}</p>
         <div className="bg-[var(--primary-color)] rounded-full size-10 flex justify-center items-center">

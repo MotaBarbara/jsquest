@@ -20,14 +20,16 @@ export default function HorizontalScrollSection() {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight;
       const scrollY = window.scrollY;
-      // const scrollDistance = scrollY - sectionTop;
-      const offset = window.innerHeight / 2; // or any px value like 200
-
+      const offset = window.innerHeight;
       if (
         scrollY >= sectionTop + offset &&
         scrollY <= sectionTop + sectionHeight
       ) {
-        const scrollDistance = scrollY - (sectionTop + offset);
+        const maxScroll = horizontal.scrollWidth - window.innerWidth;
+        const scrollDistance = Math.min(
+          scrollY - (sectionTop + offset),
+          maxScroll,
+        );
         horizontal.style.transform = `translateX(-${scrollDistance}px)`;
       }
     };
@@ -37,7 +39,7 @@ export default function HorizontalScrollSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="h-[400vh] relative">
+    <div ref={sectionRef} className="h-[400vh] relative">
       <div className="sticky top-0 h-screen overflow-hidden flex flex-col">
         <div className="max-w-120 text-center mx-auto mb-16">
           <h2 className="h2-lp mb-3">
@@ -50,7 +52,7 @@ export default function HorizontalScrollSection() {
         </div>
         <div
           ref={horizontalRef}
-          className="flex gap-10 w-[400vw] transition-transform duration-300 ease-out"
+          className="flex gap-10 md:w-[400vw] w-[280vh] transition-transform duration-300 ease-out"
         >
           <ProcessStep
             src={signupImage}
@@ -78,6 +80,6 @@ export default function HorizontalScrollSection() {
           />
         </div>
       </div>
-    </section>
+    </div>
   );
 }

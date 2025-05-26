@@ -15,8 +15,8 @@ export default function ProcessStep({
   description,
 }: ProcessStepProps) {
   return (
-    <div className="flex items-end gap-6 w-[100vh] bg-[var(--secondary-background)] p-6">
-      <div className="w-[50vh] h-[40vh] min-w-[50vh] relative">
+    <div className="flex flex-col md:flex-row items-end gap-6 md:w-[100vh] max-w-[90vw] bg-[var(--secondary-background)] p-6">
+      <div className="w-[50vh] h-[40vh] md:min-w-[50vh] max-w-[100%] relative">
         <Image src={src} alt={altText} fill style={{ objectFit: "cover" }} />
       </div>
       <div className="flex flex-col gap-2">

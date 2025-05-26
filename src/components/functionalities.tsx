@@ -44,8 +44,8 @@ function useActiveSection() {
 export default function Functionalities() {
   useActiveSection();
   return (
-    <div className="grid grid-cols-[1fr_2fr] relative items-start">
-      <div className="flex flex-col sticky top-32">
+    <div className="md:grid md:grid-cols-[1fr_2fr] relative items-start">
+      <div className="flex md:flex-col flex-row sticky md:top-32 top-12 md:text-left text-center bg-[var(--background-color)] py-2 justify-between">
         <Link
           href="#gamification"
           replace

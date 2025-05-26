@@ -7,6 +7,8 @@ import Testimonials from "../components/testimonials";
 import Image from "next/image";
 import Logo from "@/src/assets/js-quest-logo.svg";
 import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
+import type { User } from "@supabase/supabase-js";
 
 const testimonialsData = [
   {
@@ -32,11 +34,19 @@ const testimonialsData = [
 ];
 
 export default function Home() {
-  const [year, setYear] = useState<number>(0);
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const currentYear = new Date().getFullYear();
-    setYear(currentYear);
+    setYear(new Date().getFullYear());
+    async function fetchUser() {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUser(data.user);
+      }
+    }
+
+    fetchUser();
   }, []);
 
   return (
@@ -56,23 +66,23 @@ export default function Home() {
             fun, focused, and fiercely competitive.
           </p>
           <div className="flex gap-2 mt-16">
-            <Button href="/auth/login">Get started</Button>
-            <Button href="/auth/login" variant="secondary">
+            <Button href={user ? "/levels" : "/auth/login"}>Get started</Button>
+            <Button href="#functionalities" variant="secondary">
               How it works
             </Button>
           </div>
         </section>
-        <section className="h-[300vh] relative">
+        <section className="md:h-[400vh] h-[320vh] relative" id="how-it-works">
           <div className="sticky top-40 h-screen overflow-hidden">
             <HorizontalScrollSection />
           </div>
         </section>
-        <section className="py-40 text-center">
+        <section className="py-40 text-center" id="testimonials">
           <div>
             <Testimonials testimonials={testimonialsData} />
           </div>
         </section>
-        <section className="py-32">
+        <section className="py-32" id="functionalities">
           <Functionalities />
         </section>
         <section className="px-8 pt-32 pb-8 bg-[var(--primary-color)] flex flex-col items-start">
@@ -92,9 +102,9 @@ export default function Home() {
       <footer className="flex flex-col items-center px-0 md:px- py-12 border-t-1 border-[var(--unavailable-text)] mt-8">
         <Image src={Logo} alt="JS Quest Logo" width={100} height={100} />{" "}
         <div className="mt-4 flex gap-6">
-          <a href="">How It Works</a>
-          <a href="">Features & Benefits</a>
-          <a href="">Testimonials</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#functionalities">Features & Benefits</a>
+          <a href="#testimonials">Testimonials</a>
         </div>
         <p className="mt-4">{year} © JSQuest</p>
       </footer>

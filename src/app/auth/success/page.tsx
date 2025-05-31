@@ -1,4 +1,4 @@
-import Button from "@/src/components/button";
+import Button from "@/src/components/Button";
 
 export default function AccountCreatedPage() {
   return (

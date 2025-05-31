@@ -1,21 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ReactNode } from "react";
-
-interface ButtonProps {
-  href?: string;
-  children: ReactNode;
-  variant?:
-    | "primary"
-    | "secondary"
-    | "tertiary"
-    | "link"
-    | "disabled"
-    | "danger";
-  className?: string;
-  type?: "button" | "submit";
-  onClick?: () => void;
-}
+import { ButtonProps } from "../types/props";
 
 export default function Button({
   href,
@@ -23,6 +8,7 @@ export default function Button({
   variant = "primary",
   className = "",
   type,
+  disabled,
   ...props
 }: ButtonProps) {
   const base =
@@ -46,7 +32,7 @@ export default function Button({
       <button
         type="submit"
         className={styles}
-        disabled={variant === "disabled"}
+        disabled={disabled || variant === "disabled"}
         {...props}
       >
         {children}
@@ -63,7 +49,7 @@ export default function Button({
   }
 
   return (
-    <button className={styles} {...props}>
+    <button className={styles} disabled={disabled} {...props}>
       {children}
     </button>
   );

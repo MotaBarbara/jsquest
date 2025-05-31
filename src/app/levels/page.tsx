@@ -1,92 +1,19 @@
-'use client';
-import { supabase } from '@/src/lib/supabaseClient';
+"use client";
 import { CircleCheck, LockKeyhole } from "lucide-react";
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Link from "next/link";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
-interface Level {
-	id: number;
-	title: string;
-	isCompleted?: boolean;
-	percentageDone?: number;
-	inProgress?: number;
-}
-
-interface CircularProgressbarProps {
-  percentageDone: number;
-}
+import { CircularProgressbarProps } from "@/src/types/props";
+import useLevels from "@/src/hooks/useLevels";
+import useRequireAuth from "@/src/hooks/useRequireAuth";
 
 export default function LevelsOverview() {
-	const [fetchError, setFetchError] = useState<string | null>(null);
-	const [levels, setLevels] = useState<Level[] | null>(null);
+  const { levels, fetchError } = useLevels();
+  const { loading } = useRequireAuth();
 
-	useEffect(() => {
-		async function fetchLevels() {
-			const { data, error } = await supabase.from('levels').select();
+  if (loading) return <main className="flex items-center">Loading...</main>;
 
-			if (error) {
-				setFetchError('Could not fetch the levels');
-				return;
-			}
-			if (!data || data.length === 0) {
-				setFetchError('No levels found');
-				return;
-			}
-			setLevels(data);
-
-			// get all exercises
-			const { data: exercisesData, error: exercisesError } = await supabase.from('exercises').select('*').order('order', { ascending: true });
-
-			if (exercisesError || !exercisesData) {
-				setFetchError('Could not fetch the exercises');
-			}
-
-			// only the next exercise should be clickable
-			// get current user
-			const {
-				data: { user },
-			} = await supabase.auth.getUser();
-			if (!user) return;
-
-			// get the completed exercises
-			const { data: userCompletedExercises, error: userCompletedError } = await supabase.from('user_exercises').select('exercise_id').eq('user_id', user.id).eq('is_correct', true);
-
-			if (userCompletedError || !userCompletedExercises) {
-				setFetchError('Could not fetch completed exercises');
-				return;
-			}
-
-			const completedIds = userCompletedExercises.map(e => e.exercise_id);
-			const uniqueIds = [...new Set(completedIds)].length;
-
-			
-			const inProgressLevel = Math.floor(uniqueIds / 10);
-			const exercisesDonePerLevel = uniqueIds - 10 * inProgressLevel;
-
-			const percentageDone = exercisesDonePerLevel * 10
-
-			const updatedLevels = data.map(level => {
-  			const isCompleted = level.id <= inProgressLevel - 1;
-				const inProgress = level.id === inProgressLevel;
-				
-  		return {
-        ...level,
-        isCompleted,
-				inProgress,
-				percentageDone
-      };
-		});
-			
-			setLevels(updatedLevels);
-			
-		}
-		fetchLevels();
-	}, []);
-
-
-	return (
+  return (
     <main className="h-[100vh] min-h-[700px] grid grid-cols-[repeat(auto-fit,_minmax(370px,_1fr))] gap-2.5 max-w-7xl m-auto">
       {fetchError && <p>{fetchError}</p>}
       {levels && levels.length === 0 && <p>No levels found</p>}

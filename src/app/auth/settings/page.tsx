@@ -1,11 +1,12 @@
 "use client";
 import { supabase } from "@/src/lib/supabaseClient";
-import Button from "@/src/components/button";
+import Button from "@/src/components/Button";
 import { useState, useEffect } from "react";
 import { Pen } from "lucide-react";
-import { FetchInitials } from "@/src/utils/fetchInitials";
+import { useInitials } from "@/src/hooks/useInitials";
 import { useRef } from "react";
 import Image from "next/image";
+import { useAvatar } from "@/src/hooks/useAvatar";
 
 export default function UpdateUser() {
   const [firstName, setFirstName] = useState("");
@@ -13,19 +14,18 @@ export default function UpdateUser() {
   const [password, setPassword] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-
   const [defaultFirstName, setDefaultFirstName] = useState("");
   const [defaultLastName, setDefaultLastName] = useState("");
-
   const [updatedFirstName, setUpdatedFirstName] = useState(false);
   const [updatedLastName, setUpdatedLastName] = useState(false);
-
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
-  const [initials, setInitials] = useState<string | null>(null);
+  const { initials } = useInitials();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { refreshAvatar } = useAvatar(userId || undefined);
 
   useEffect(() => {
     async function fetchProfileDate() {
@@ -56,9 +56,6 @@ export default function UpdateUser() {
         setDefaultLastName(profile.last_name);
         setAvatarUrl(profile.avatar_url ?? null);
       }
-
-      const result = await FetchInitials();
-      setInitials(result);
     }
 
     fetchProfileDate();
@@ -66,7 +63,10 @@ export default function UpdateUser() {
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
-      setAvatarFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setAvatarFile(file);
+      const tempUrl = URL.createObjectURL(file);
+      setPreviewUrl(tempUrl);
     }
   }
 
@@ -97,6 +97,8 @@ export default function UpdateUser() {
 
         uploadedAvatarUrl = publicUrlData.publicUrl;
         setAvatarUrl(uploadedAvatarUrl);
+        setAvatarUrl(prev => `${prev}?t=${Date.now()}`);
+        refreshAvatar();
       }
     }
 
@@ -128,6 +130,9 @@ export default function UpdateUser() {
     setMessage("Details updated.");
     setPassword("");
     setAvatarFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   }
 
   return (
@@ -135,9 +140,9 @@ export default function UpdateUser() {
       <h1 className="pb-8 text-center">Update Account Details</h1>
       <form className="auth-form" onSubmit={updateUserData}>
         <div className="w-24 h-24 relative m-auto">
-          {avatarUrl ? (
+          {previewUrl || avatarUrl ? (
             <Image
-              src={avatarUrl}
+              src={previewUrl || `${avatarUrl}?t=${Date.now()}`}
               width={96}
               height={96}
               alt="User avatar"
@@ -162,6 +167,7 @@ export default function UpdateUser() {
             className="hidden"
           />
         </div>
+
         <div>
           <label htmlFor="firstName">First Name</label>
           <div className="relative inline-block">
@@ -216,6 +222,7 @@ export default function UpdateUser() {
               }`}
               id="password"
               type="password"
+              value="password"
               onChange={e => setPassword(e.target.value)}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--unavailable-text)]">

@@ -1,84 +1,22 @@
-'use client';
-import { supabase } from '@/src/lib/supabaseClient';
+"use client";
 import { CircleCheck, LockKeyhole, CircleArrowRight } from "lucide-react";
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
-
-interface Exercise {
-	id: number;
-	level_id: number;
-	title: string;
-	order: number;
-}
-interface Level {
-  title: string;
-}
+import Link from "next/link";
+import useExercisesOverview from "@/src/hooks/useExercisesOverview";
+import useRequireAuth from "@/src/hooks/useRequireAuth";
 
 export default function ExercisesOverview() {
-	const { levelId } = useParams();
-	const [fetchError, setFetchError] = useState<string | null>(null);
-	const [exercises, setExercises] = useState<Exercise[] | null>(null);
-	const [highestCompletedOrder, setHighestCompletedOrder] = useState<number>(0);
-	const [levels, setLevels] = useState<Level[] | null>(null);
+  const {
+    exercises,
+    highestCompletedOrder,
+    fetchError,
+    currentLevelTitle,
+    levelId,
+  } = useExercisesOverview();
+  const { loading } = useRequireAuth();
 
+  if (loading) return <main className="flex items-center">Loading...</main>;
 
-	useEffect(() => {
-		async function fetchExercises() {
-			// get all exercises
-			const { data, error } = await supabase.from('exercises').select('*').eq('level_id', levelId).order('order', { ascending: true });
-
-			if (error || !data) {
-				setFetchError('Could not fetch the exercises');
-				setExercises(null);
-			}
-			setExercises(data);
-
-			// only the next exercise should be clickable
-			// get current user
-			const {
-				data: { user },
-			} = await supabase.auth.getUser();
-			if (!user) return;
-
-			// get the completed exercises
-			const { data: userCompletedExercises, error: userCompletedError } = await supabase.from('user_exercises').select('exercise_id').eq('user_id', user.id).eq('is_correct', true);
-
-			if (userCompletedError || !userCompletedExercises) {
-				setFetchError('Could not fetch completed exercises');
-				return;
-			}
-			const completedIds = userCompletedExercises.map(e => e.exercise_id);
-
-			// exercise w/ highest order
-			const completedExercises = data?.filter(ex => completedIds.includes(ex.id));
-			const highestOrder = completedExercises?.reduce((max, ex) => (ex.order > max ? ex.order : max), 0);
-
-			setHighestCompletedOrder(highestOrder);
-		}
-		fetchExercises();
-
-		async function fetchLevels() {
-			const { data, error } = await supabase
-        .from("levels")
-        .select("title")
-        .eq("id", levelId);
-				if (error) {
-					setFetchError("Could not fetch the levels");
-					return;
-				}
-				if (!data || data.length === 0) {
-					setFetchError("No levels found");
-					return;
-				}
-				setLevels(data);
-		}
-		fetchLevels();
-	}, [levelId]);
-	
-	const currentLevelTitle = levels?.[0]?.title;
-	
-	return (
+  return (
     <main className="p-6 m-auto h-[100vh] min-h-[700px] pt-[4.625rem]">
       <p>
         Level <span>{levelId}</span>
@@ -89,20 +27,14 @@ export default function ExercisesOverview() {
         {exercises && exercises.length === 0 && <p>No exercises found</p>}
         {exercises &&
           exercises.map(exercise => {
-            const firstOfLevel = [
-              101, 201, 301, 401, 501, 601, 701, 801, 901, 1001, 1101, 1201,
-            ];
+            const currentExercise = exercise.order % 100;
+            const isFirstOfLevel = exercise.order % 100 === 1;
 
             const isUnlocked =
-              firstOfLevel.includes(exercise.order) ||
-              exercise.order <= highestCompletedOrder;
+              isFirstOfLevel || exercise.order <= highestCompletedOrder;
             const nextExercise =
-              !firstOfLevel.includes(exercise.order) &&
-              exercise.order === highestCompletedOrder + 1;
+              !isFirstOfLevel && exercise.order === highestCompletedOrder + 1;
             const isLocked = !isUnlocked && !nextExercise;
-
-            const order = exercise.order
-            const currentExercise = order.toString().slice(2);
 
             const exerciseStructure = (
               <div className="w-full">

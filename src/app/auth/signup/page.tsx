@@ -1,68 +1,48 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { supabase } from "@/src/lib/supabaseClient";
-import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Button from "@/src/components/button";
+import Button from "@/src/components/Button";
+import { useAuth } from "@/src/contexts/AuthContext";
+import {
+  signUpFormSchema,
+  type SignUpFormData,
+} from "@/src/utils/validations/auth";
 
-const signUpFormSchema = z.object({
-  email: z.string().email({ message: "Enter a valid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
-  first_name: z.string().min(1, { message: "Enter a valid first name" }),
-  last_name: z.string().min(1, { message: "Enter a valid last name" }),
-});
-
-type SignUpFormData = z.infer<typeof signUpFormSchema>;
-
-export default function Login() {
+export default function SignUp() {
   const router = useRouter();
-  const [origin, setOrigin] = useState("");
+  const { signUp } = useAuth();
 
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       email: "",
       password: "",
+      first_name: "",
+      last_name: "",
     },
   });
 
   async function handleSignUp(data: SignUpFormData) {
     try {
-      const { data: signUpData } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          emailRedirectTo: `${origin}/auth/success`,
-        },
+      const { error } = await signUp(data.email, data.password, {
+        first_name: data.first_name,
+        last_name: data.last_name,
       });
 
-      const userId = signUpData.user?.id;
-
-      if (userId) {
-        await supabase.from("profiles").insert([
-          {
-            id: userId,
-            first_name: data.first_name,
-            last_name: data.last_name,
-          },
-        ]);
+      if (error) {
+        throw error;
       }
+
       router.push("/auth/confirm-email");
     } catch (error) {
       console.error(error);
-      toast.error("Error logging in, please try again later.");
+      toast.error("Error creating account, please try again later.");
     }
   }
 
@@ -70,12 +50,12 @@ export default function Login() {
     <main className="h-[100vh] min-h-[700px] flex flex-col items-center justify-center p-6">
       <h1 className="pb-8 text-center">Create Account</h1>
       <form className="auth-form" onSubmit={handleSubmit(handleSignUp)}>
-        <div className="!grid !grid-cols-2 ">
+        <div className="!grid !grid-cols-2">
           <div>
             <label htmlFor="fname">First name</label>
             <input id="fname" type="text" {...register("first_name")} />
             <div className="text-[var(--danger)]">
-              {errors.email && <p>{errors.email.message}</p>}
+              {errors.first_name && <p>{errors.first_name.message}</p>}
             </div>
           </div>
 
@@ -83,7 +63,7 @@ export default function Login() {
             <label htmlFor="lname">Last Name</label>
             <input id="lname" type="text" {...register("last_name")} />
             <div className="text-[var(--danger)]">
-              {errors.email && <p>{errors.email.message}</p>}
+              {errors.last_name && <p>{errors.last_name.message}</p>}
             </div>
           </div>
         </div>

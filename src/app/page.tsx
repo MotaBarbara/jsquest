@@ -1,9 +1,9 @@
 "use client";
-import Button from "../components/button";
-import TypewriterEffect from "../components/changingHeadline";
-import Functionalities from "../components/functionalities";
-import HorizontalScrollSection from "../components/horizontalScrollSection";
-import Testimonials from "../components/testimonials";
+import Button from "../components/Button";
+import TypewriterEffect from "../components/ChangingHeadline";
+import Functionalities from "../components/Functionalities";
+import HorizontalScrollSection from "../components/HorizontalScrollSection";
+import Testimonials from "../components/Testimonials";
 import Image from "next/image";
 import Logo from "@/src/assets/js-quest-logo.svg";
 import { useState, useEffect } from "react";
@@ -87,7 +87,7 @@ export default function Home() {
         </section>
         <section className="px-8 pt-32 pb-8 bg-[var(--primary-color)] flex flex-col items-start">
           <h2 className="h2-lp mb-6 max-w-95">
-            Start mastering JavaScript today, it’s free!
+            Start mastering JavaScript today, it is free!
           </h2>
           <div className="flex gap-8 items-center">
             <Button href="/auth/login" variant="tertiary">

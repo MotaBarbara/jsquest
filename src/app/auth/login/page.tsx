@@ -36,6 +36,8 @@ export default function Login() {
     }
     router.push("/levels");
   }
+  console.log("Component rendered");
+
 
   return (
     <main className="h-[100vh] min-h-[700px] flex flex-col items-center justify-center p-6">
@@ -61,7 +63,7 @@ export default function Login() {
           Login
         </Button>
         <div>
-          <Link href="/auth/forgot-password">
+          <Link href="/auth/signup">
             <p className="text-[var(--text)] text-center cursor-pointer md:hidden !text-sm">
               New here?{" "}
               <span className="underline underline-offset-3">Sign up now.</span>

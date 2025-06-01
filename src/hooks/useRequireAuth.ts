@@ -1,30 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/src/lib/supabaseClient";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function useRequireAuth() {
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    async function checkAuth() {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-
-      if (error || !user) {
-        router.replace("/auth/login");
-      } else {
-        setAuthenticated(true);
-      }
-      setLoading(false);
+    if (!loading && !user) {
+      router.replace("/auth/login");
     }
+  }, [user, loading, router]);
 
-    checkAuth();
-  }, [router]);
-
-  return { loading, authenticated };
+  return { loading, authenticated: !!user };
 }

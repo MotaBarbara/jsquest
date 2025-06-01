@@ -5,7 +5,7 @@ import signupImage from "../assets/process-signup.avif";
 import journeyImage from "../assets/process-journey.avif";
 import trackImage from "../assets/process-track.avif";
 import leaderboardImage from "../assets/process-leaderboard.avif";
-import ProcessStep from "./ProcessStep";
+import ProcessStep from "./ProcessStage";
 
 export default function HorizontalScrollSection() {
   const sectionRef = useRef<HTMLDivElement>(null);

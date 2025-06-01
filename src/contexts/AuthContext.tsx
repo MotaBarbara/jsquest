@@ -55,7 +55,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     async function initializeAuth() {
       try {
+        console.log('Initializing auth...');
+        
+        // Get the current session
         const { data: { session: currentSession } } = await supabase.auth.getSession();
+        console.log('Current session from storage:', currentSession);
+
         if (mounted) {
           if (currentSession) {
             setSession(currentSession);
@@ -78,6 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      console.log('Auth state changed:', event, currentSession);
       
       if (mounted) {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {

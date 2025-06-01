@@ -49,6 +49,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -56,38 +58,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function initializeAuth() {
       try {
         console.log('Initializing auth...');
+        setIsInitializing(true);
         
         // Get the current session
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         console.log('Current session from storage:', currentSession);
 
         if (mounted) {
-          if (currentSession) {
-            setSession(currentSession);
-            setUser(currentSession.user);
-            if (currentSession.user) {
-              await fetchProfile(currentSession.user.id);
-            }
-          }
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    // Set up the auth state listener first
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      console.log('Auth state changed:', event, currentSession);
-      
-      if (mounted) {
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
-          // Ensure we have a valid session before updating state
           if (currentSession?.access_token) {
             setSession(currentSession);
             setUser(currentSession.user);
@@ -95,16 +72,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               await fetchProfile(currentSession.user.id);
             }
           }
-        } else if (event === 'SIGNED_OUT') {
-          setSession(null);
-          setUser(null);
-          setProfile(null);
+          setLoading(false);
+          setIsInitialized(true);
+          setIsInitializing(false);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (mounted) {
+          setLoading(false);
+          setIsInitialized(true);
+          setIsInitializing(false);
+        }
+      }
+    }
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      console.log('Auth state changed:', event, currentSession);
+      
+      if (mounted) {
+        if (!isInitializing) {
+          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+            if (currentSession?.access_token) {
+              setSession(currentSession);
+              setUser(currentSession.user);
+              if (currentSession.user) {
+                await fetchProfile(currentSession.user.id);
+              }
+            }
+          } else if (event === 'SIGNED_OUT') {
+            setSession(null);
+            setUser(null);
+            setProfile(null);
+          }
         }
         setLoading(false);
       }
     });
 
-    // Then initialize auth
     initializeAuth();
 
     return () => {
@@ -113,10 +119,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Add a debug effect to log session changes
   useEffect(() => {
-    console.log('Session state updated:', { session, user, loading });
-  }, [session, user, loading]);
+    console.log('Session state updated:', { session, user, loading, isInitialized, isInitializing });
+  }, [session, user, loading, isInitialized, isInitializing]);
 
   async function fetchProfile(userId: string) {
     const { data, error } = await supabase
@@ -230,7 +235,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     session,
-    loading,
+    loading: loading || !isInitialized || isInitializing,
     profile,
     signIn,
     signUp,

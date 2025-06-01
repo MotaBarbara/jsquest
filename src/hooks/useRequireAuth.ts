@@ -14,8 +14,8 @@ export default function useRequireAuth() {
       
       // Add a small delay to ensure session is properly initialized
       const timer = setTimeout(() => {
-        if (!session) {
-          console.log('No session found, redirecting to login');
+        if (!session?.access_token) {
+          console.log('No valid session found, redirecting to login');
           router.replace("/auth/login");
         }
         setIsChecking(false);
@@ -26,5 +26,5 @@ export default function useRequireAuth() {
   }, [user, loading, session, router]);
 
   // Return loading state that includes both the auth loading and our checking state
-  return { loading: loading || isChecking, authenticated: !!session };
+  return { loading: loading || isChecking, authenticated: !!session?.access_token };
 }

@@ -14,7 +14,7 @@ import {
 export default function Login() {
   const [message, setMessage] = useState("");
   const router = useRouter();
-  const { signIn, session } = useAuth();
+  const { signIn } = useAuth();
 
   const {
     register,
@@ -35,16 +35,9 @@ export default function Login() {
       return;
     }
 
-    // Wait for the session to be set
-    const checkSession = setInterval(() => {
-      if (session?.access_token) {
-        clearInterval(checkSession);
-        router.push("/levels");
-      }
-    }, 100);
-
-    // Clear interval after 5 seconds to prevent infinite checking
-    setTimeout(() => clearInterval(checkSession), 5000);
+    setTimeout(() => {
+      router.push("/levels");
+    }, 500);
   }
 
   return (

@@ -60,11 +60,19 @@ export default function Login() {
         <Button type="submit" variant="primary">
           Login
         </Button>
-        <Link href="/auth/forgot-password">
-          <p className="text-[var(--text)] underline underline-offset-3 text-center cursor-pointer">
-            Forgot Password?
-          </p>
-        </Link>
+        <div>
+          <Link href="/auth/forgot-password">
+            <p className="text-[var(--text)] text-center cursor-pointer md:hidden !text-sm">
+              New here?{" "}
+              <span className="underline underline-offset-3">Sign up now.</span>
+            </p>
+          </Link>
+          <Link href="/auth/forgot-password">
+            <p className="text-[var(--text)] underline underline-offset-3 text-center cursor-pointer !text-sm">
+              Forgot Password?
+            </p>
+          </Link>
+        </div>
       </form>
     </main>
   );

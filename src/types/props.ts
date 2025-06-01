@@ -71,6 +71,7 @@ export interface ProcessStepProps {
   altText: string;
   heading: string;
   description: string;
+  topMargin: number;
 }
 
 export interface RankingProps {

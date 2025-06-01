@@ -51,21 +51,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [pendingAuthEvent, setPendingAuthEvent] = useState<{ event: string; session: Session | null } | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
     async function initializeAuth() {
       try {
-        console.log('Initializing auth...');
+        console.log('[AuthContext] Starting initialization...');
         setIsInitializing(true);
         
         // Get the current session
         const { data: { session: currentSession } } = await supabase.auth.getSession();
-        console.log('Current session from storage:', currentSession);
+        console.log('[AuthContext] Initial session from storage:', currentSession);
 
         if (mounted) {
           if (currentSession?.access_token) {
+            console.log('[AuthContext] Setting initial session state');
             setSession(currentSession);
             setUser(currentSession.user);
             if (currentSession.user) {
@@ -75,9 +77,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
           setIsInitialized(true);
           setIsInitializing(false);
+          console.log('[AuthContext] Initialization complete');
+
+          // Process any pending auth event after initialization
+          if (pendingAuthEvent) {
+            console.log('[AuthContext] Processing pending auth event:', pendingAuthEvent);
+            handleAuthStateChange(pendingAuthEvent.event, pendingAuthEvent.session);
+            setPendingAuthEvent(null);
+          }
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        console.error('[AuthContext] Error initializing auth:', error);
         if (mounted) {
           setLoading(false);
           setIsInitialized(true);
@@ -86,31 +96,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    function handleAuthStateChange(event: string, currentSession: Session | null) {
+      console.log('[AuthContext] Handling auth state change:', { event, hasSession: !!currentSession, hasToken: !!currentSession?.access_token });
+      
+      if (currentSession?.access_token) {
+        console.log('[AuthContext] Updating session state with new session');
+        setSession(currentSession);
+        setUser(currentSession.user);
+        if (currentSession.user) {
+          fetchProfile(currentSession.user.id);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        console.log('[AuthContext] Clearing session state');
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+      }
+      setLoading(false);
+    }
+
+    // Set up the auth state listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      console.log('Auth state changed:', event, currentSession);
+      console.log('[AuthContext] Auth state changed:', { event, hasSession: !!currentSession, hasToken: !!currentSession?.access_token });
       
       if (mounted) {
-        if (!isInitializing) {
-          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
-            if (currentSession?.access_token) {
-              setSession(currentSession);
-              setUser(currentSession.user);
-              if (currentSession.user) {
-                await fetchProfile(currentSession.user.id);
-              }
-            }
-          } else if (event === 'SIGNED_OUT') {
-            setSession(null);
-            setUser(null);
-            setProfile(null);
-          }
+        if (isInitializing) {
+          console.log('[AuthContext] Storing pending auth event during initialization');
+          setPendingAuthEvent({ event, session: currentSession });
+        } else {
+          console.log('[AuthContext] Processing auth event immediately');
+          handleAuthStateChange(event, currentSession);
         }
-        setLoading(false);
       }
     });
 
+    // Initialize auth after setting up the listener
     initializeAuth();
 
     return () => {
@@ -119,9 +141,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Add a debug effect to log session changes
   useEffect(() => {
-    console.log('Session state updated:', { session, user, loading, isInitialized, isInitializing });
-  }, [session, user, loading, isInitialized, isInitializing]);
+    console.log('[AuthContext] Session state updated:', { 
+      hasSession: !!session, 
+      hasUser: !!user, 
+      loading, 
+      isInitialized, 
+      isInitializing, 
+      hasPendingEvent: !!pendingAuthEvent 
+    });
+  }, [session, user, loading, isInitialized, isInitializing, pendingAuthEvent]);
 
   async function fetchProfile(userId: string) {
     const { data, error } = await supabase

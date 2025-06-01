@@ -11,7 +11,6 @@ import {
 } from "@/src/utils/validations/auth";
 
 export default function ResetPasswordPage() {
-	console.log('ResetPasswordPage rendered');
 	const router = useRouter();
 	const { updatePassword } = useAuth();
 	const [message, setMessage] = useState('');

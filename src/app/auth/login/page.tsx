@@ -36,8 +36,6 @@ export default function Login() {
     }
     router.push("/levels");
   }
-  console.log("Component rendered");
-
 
   return (
     <main className="h-[100vh] min-h-[700px] flex flex-col items-center justify-center p-6">

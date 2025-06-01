@@ -9,9 +9,7 @@ export default function useRequireAuth() {
 
   useEffect(() => {
     if (!loading) {
-      console.log('Auth state in useRequireAuth:', { user, loading, session });
       if (!session) {
-        console.log('No session found, redirecting to login');
         router.replace("/auth/login");
       }
     }

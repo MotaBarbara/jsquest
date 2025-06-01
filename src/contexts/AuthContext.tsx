@@ -55,12 +55,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     async function initializeAuth() {
       try {
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        console.log('Initializing auth...');
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          return;
+        }
+
+        console.log('Initial session:', initialSession);
         
         if (mounted) {
           setSession(initialSession);
           setUser(initialSession?.user ?? null);
           if (initialSession?.user) {
+            console.log('Fetching profile for user:', initialSession.user.id);
             await fetchProfile(initialSession.user.id);
           }
         }
@@ -78,6 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log('Auth state changed:', _event, session);
       if (mounted) {
         setSession(session);
         setUser(session?.user ?? null);

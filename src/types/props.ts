@@ -119,4 +119,11 @@ export interface UserRankingProps {
   initials: string | null;
   highestLevel: number | null;
   score: number;
-};
+}
+
+export interface ExerciseHookProps {
+  id: string;
+  correct_answers: number[];
+  level_id: number;
+  order: number;
+}

@@ -17,7 +17,7 @@ export default function ExercisesOverview() {
   if (loading) return <main className="flex items-center">Loading...</main>;
 
   return (
-    <main className="p-6 m-auto h-[100vh] min-h-[700px] pt-[4.625rem]">
+    <main className="p-6 m-auto h-[100vh] min-h-[900px] py-[4.625rem]">
       <p>
         Level <span>{levelId}</span>
       </p>

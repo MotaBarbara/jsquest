@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { supabase } from "@/src/lib/supabaseClient";
+import { ExerciseHookProps } from "../types/props";
 
-export default function useExerciseSubmission(exercise: any) {
+export default function useExerciseSubmission(
+  exercise: ExerciseHookProps | null,
+) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 

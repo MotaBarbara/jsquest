@@ -5,7 +5,7 @@ import signupImage from "../assets/process-signup.avif";
 import journeyImage from "../assets/process-journey.avif";
 import trackImage from "../assets/process-track.avif";
 import leaderboardImage from "../assets/process-leaderboard.avif";
-import ProcessStep from "./processStep";
+import ProcessStep from "./ProcessStep";
 
 export default function HorizontalScrollSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -46,8 +46,8 @@ export default function HorizontalScrollSection() {
   }, []);
 
   return (
-    <div 
-      ref={sectionRef} 
+    <div
+      ref={sectionRef}
       className="h-[400vh] relative"
       role="region"
       aria-label="Process steps"
@@ -58,13 +58,12 @@ export default function HorizontalScrollSection() {
             The Ultimate JavaScript Challenge Platform
           </h2>
           <p>
-            Master JavaScript through interactive challenges, track your progress, and compete with others.
+            Master JavaScript through interactive challenges, track your
+            progress, and compete with others.
           </p>
         </div>
         {error && (
-          <div className="text-[var(--danger)] text-center mb-4">
-            {error}
-          </div>
+          <div className="text-[var(--danger)] text-center mb-4">{error}</div>
         )}
         <div
           ref={horizontalRef}

@@ -56,26 +56,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function initializeAuth() {
       try {
         console.log('Initializing auth...');
-        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
         
-        if (error) {
-          console.error('Error getting session:', error);
-          return;
-        }
+        // First check if we have a session in storage
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        console.log('Current session from storage:', currentSession);
 
-        console.log('Initial session:', initialSession);
-        
         if (mounted) {
-          setSession(initialSession);
-          setUser(initialSession?.user ?? null);
-          if (initialSession?.user) {
-            console.log('Fetching profile for user:', initialSession.user.id);
-            await fetchProfile(initialSession.user.id);
+          if (currentSession) {
+            setSession(currentSession);
+            setUser(currentSession.user);
+            if (currentSession.user) {
+              await fetchProfile(currentSession.user.id);
+            }
           }
+          setLoading(false);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
-      } finally {
         if (mounted) {
           setLoading(false);
         }
@@ -86,14 +83,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log('Auth state changed:', _event, session);
+    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      console.log('Auth state changed:', event, currentSession);
+      
       if (mounted) {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        } else {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          setSession(currentSession);
+          setUser(currentSession?.user ?? null);
+          if (currentSession?.user) {
+            await fetchProfile(currentSession.user.id);
+          }
+        } else if (event === 'SIGNED_OUT') {
+          setSession(null);
+          setUser(null);
           setProfile(null);
         }
         setLoading(false);

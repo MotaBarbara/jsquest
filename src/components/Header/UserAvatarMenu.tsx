@@ -33,7 +33,7 @@ export default function UserAvatarMenu({
       >
         {pathname !== "/auth/reset-password" && (
           <>
-            <div className="rounded-full size-9.5 object-cover bg-[var(--primary-color)] text-[var(--text)] flex justify-center items-center pt-1 mb-1">
+            <div className="rounded-full size-9.5 object-cover bg-[var(--primary-color)] text-[var(--text)] flex justify-center items-center mb-1">
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}

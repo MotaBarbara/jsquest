@@ -145,7 +145,7 @@ export default function UpdateUser() {
               src={previewUrl || `${avatarUrl}?t=${Date.now()}`}
               width={96}
               height={96}
-              alt="User avatar"
+              alt="Your avatar"
               className="rounded-full w-full h-full object-cover mb-1"
             />
           ) : (

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Logo from "@/src/assets/js-quest-logo.svg";
+import Logo from "@/public/js-quest-logo.svg";
 import Image from "next/image";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -22,11 +22,9 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname() || "";
 
-  console.log({ user, loading, profile });
-
   return (
     <header className="fixed w-full z-10">
-      <nav className="flex justify-between items-center py-4 px-5 md:px-12 m-auto max-w-[80rem] bg-[var(--background-color)]">
+      <nav className="md:flex justify-between items-center py-4 px-5 md:px-12 m-auto max-w-[80rem] bg-[var(--background-color)] grid grid-cols-[auto_auto]">
         <Link
           href={user ? "/levels" : "/"}
           className={user ? "w-[35vw]" : "w-[175px]"}

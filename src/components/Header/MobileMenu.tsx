@@ -10,7 +10,7 @@ export default function MobileMenu({
 }: MobileMenuProps) {
   const close = () => setMobileMenuOpen(false);
   return (
-    <div className="md:hidden flex flex-col gap-4 bg-[var(--background-color)] px-5 py-4 shadow-md">
+    <div className="md:hidden flex flex-col gap-4 bg-[var(--background-color)] px-5 py-4 shadow-md col-span-2 text-center">
       {user ? (
         <>
           <Link

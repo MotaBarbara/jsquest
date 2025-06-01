@@ -73,7 +73,7 @@ export default function Home() {
           </div>
         </section>
         <section className="md:h-[400vh] h-[320vh] relative" id="how-it-works">
-          <div className="sticky top-40 h-screen overflow-hidden">
+          <div className="md:sticky top-32 h-screen md:overflow-hidden">
             <HorizontalScrollSection />
           </div>
         </section>
@@ -89,12 +89,12 @@ export default function Home() {
           <h2 className="h2-lp mb-6 max-w-95">
             Start mastering JavaScript today, it is free!
           </h2>
-          <div className="flex flex-wrap md:flex-nowrap gap-8 items-center md:flex-row">
+          <div className="flex flex-wrap md:flex-nowrap gap-x-8 gap-y-4 items-center md:flex-row">
             <Button href="/auth/login" variant="tertiary">
               Get started
             </Button>
-            <Button href="#gamification" variant="link">
-              Functionalities
+            <Button href="#gamification" variant="link" className="text-left">
+              See all functionalities
             </Button>
           </div>
         </section>

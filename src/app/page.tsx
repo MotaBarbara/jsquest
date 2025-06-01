@@ -5,7 +5,7 @@ import Functionalities from "../components/Functionalities";
 import HorizontalScrollSection from "../components/HorizontalScrollSection";
 import Testimonials from "../components/Testimonials";
 import Image from "next/image";
-import Logo from "@/src/assets/js-quest-logo.svg";
+import Logo from "@/public/js-quest-logo.svg";
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import type { User } from "@supabase/supabase-js";
@@ -89,7 +89,7 @@ export default function Home() {
           <h2 className="h2-lp mb-6 max-w-95">
             Start mastering JavaScript today, it is free!
           </h2>
-          <div className="flex gap-8 items-center">
+          <div className="flex flex-wrap md:flex-nowrap gap-8 items-center md:flex-row">
             <Button href="/auth/login" variant="tertiary">
               Get started
             </Button>
@@ -99,9 +99,9 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col items-center px-0 md:px- py-12 border-t-1 border-[var(--unavailable-text)] mt-8">
+      <footer className="flex flex-col items-center md:px- py-12 border-t-1 border-[var(--unavailable-text)] mt-8 px-5">
         <Image src={Logo} alt="JS Quest Logo" width={100} height={100} />{" "}
-        <div className="mt-4 flex gap-6">
+        <div className="mt-4 flex gap-6 flex-wrap justify-center">
           <a href="#how-it-works">How It Works</a>
           <a href="#functionalities">Features & Benefits</a>
           <a href="#testimonials">Testimonials</a>

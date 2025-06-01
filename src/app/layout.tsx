@@ -22,6 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/jsquest-favicon.jpg" />
+      </head>
       <body className={`${inter.variable} antialiased`}>
         <AuthProvider>
           <Header />

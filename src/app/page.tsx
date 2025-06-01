@@ -1,6 +1,6 @@
 "use client";
 import Button from "../components/Button";
-import TypewriterEffect from "../components/ChangingHeadline";
+import TypewriterEffect from "../components/RotativeHeadline";
 import Functionalities from "../components/Functionalities";
 import HorizontalScrollSection from "../components/HorizontalScrollSection";
 import Testimonials from "../components/Testimonials";

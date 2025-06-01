@@ -1,8 +1,11 @@
-import { User } from '@supabase/supabase-js';
+import { User } from "@supabase/supabase-js";
 
-export const calculateInitials = (firstName?: string, lastName?: string): string => {
-  const firstInitial = firstName?.[0] ?? '';
-  const lastInitial = lastName?.[0] ?? '';
+export const calculateInitials = (
+  firstName?: string,
+  lastName?: string,
+): string => {
+  const firstInitial = firstName?.[0] ?? "";
+  const lastInitial = lastName?.[0] ?? "";
   return `${firstInitial}${lastInitial}`.toUpperCase();
 };
 
@@ -22,17 +25,17 @@ export const handleApiError = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
   }
-  return 'An unexpected error occurred';
+  return "An unexpected error occurred";
 };
 
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number
+  wait: number,
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
-}; 
+};

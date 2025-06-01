@@ -41,6 +41,7 @@ export default function UserAvatarMenu({
                   width={38}
                   height={38}
                   className="rounded-full"
+                  style={{ minHeight: "38px" }}
                 />
               ) : (
                 initials

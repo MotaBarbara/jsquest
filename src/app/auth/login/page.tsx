@@ -14,7 +14,7 @@ import {
 export default function Login() {
   const [message, setMessage] = useState("");
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signIn, session } = useAuth();
 
   const {
     register,
@@ -34,7 +34,17 @@ export default function Login() {
       setMessage("Invalid credentials, please try again");
       return;
     }
-    router.push("/levels");
+
+    // Wait for the session to be set
+    const checkSession = setInterval(() => {
+      if (session?.access_token) {
+        clearInterval(checkSession);
+        router.push("/levels");
+      }
+    }, 100);
+
+    // Clear interval after 5 seconds to prevent infinite checking
+    setTimeout(() => clearInterval(checkSession), 5000);
   }
 
   return (

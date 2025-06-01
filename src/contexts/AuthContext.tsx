@@ -87,10 +87,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (mounted) {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
-          setSession(currentSession);
-          setUser(currentSession?.user ?? null);
-          if (currentSession?.user) {
-            await fetchProfile(currentSession.user.id);
+          // Ensure we have a valid session before updating state
+          if (currentSession?.access_token) {
+            setSession(currentSession);
+            setUser(currentSession.user);
+            if (currentSession.user) {
+              await fetchProfile(currentSession.user.id);
+            }
           }
         } else if (event === 'SIGNED_OUT') {
           setSession(null);
@@ -109,6 +112,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Add a debug effect to log session changes
+  useEffect(() => {
+    console.log('Session state updated:', { session, user, loading });
+  }, [session, user, loading]);
 
   async function fetchProfile(userId: string) {
     const { data, error } = await supabase

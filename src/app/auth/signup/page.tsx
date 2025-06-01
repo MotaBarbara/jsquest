@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Button from "@/src/components/Button";
 import { useAuth } from "@/src/contexts/AuthContext";
+import Link from "next/link";
+
 import {
   signUpFormSchema,
   type SignUpFormData,
@@ -86,6 +88,12 @@ export default function SignUp() {
         <Button type="submit" variant="primary">
           Create Account
         </Button>
+          <Link href="/auth/login">
+            <p className="text-[var(--text)] text-center cursor-pointer md:hidden !text-sm">
+              Already have an account?{" "}
+              <span className="underline underline-offset-3">Login now.</span>
+            </p>
+          </Link>
       </form>
     </main>
   );

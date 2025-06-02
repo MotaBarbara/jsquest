@@ -25,6 +25,5 @@ export default function useRequireAuth() {
     }
   }, [user, loading, session, router]);
 
-  // Return loading state that includes both the auth loading and our checking state
   return { loading: loading || isChecking, authenticated: !!session?.access_token };
 }

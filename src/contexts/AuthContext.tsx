@@ -51,23 +51,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
-  const [pendingAuthEvent, setPendingAuthEvent] = useState<{ event: string; session: Session | null } | null>(null);
+  const [pendingAuthEvent, setPendingAuthEvent] = useState<{
+    event: string;
+    session: Session | null;
+  } | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
     async function initializeAuth() {
       try {
-        console.log('[AuthContext] Starting initialization...');
+        console.log("[AuthContext] Starting initialization...");
         setIsInitializing(true);
-        
-        // Get the current session
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-        console.log('[AuthContext] Initial session from storage:', currentSession);
+
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
+        console.log(
+          "[AuthContext] Initial session from storage:",
+          currentSession,
+        );
 
         if (mounted) {
           if (currentSession?.access_token) {
-            console.log('[AuthContext] Setting initial session state');
+            console.log("[AuthContext] Setting initial session state");
             setSession(currentSession);
             setUser(currentSession.user);
             if (currentSession.user) {
@@ -77,17 +84,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
           setIsInitialized(true);
           setIsInitializing(false);
-          console.log('[AuthContext] Initialization complete');
+          console.log("[AuthContext] Initialization complete");
 
-          // Process any pending auth event after initialization
           if (pendingAuthEvent) {
-            console.log('[AuthContext] Processing pending auth event:', pendingAuthEvent);
-            handleAuthStateChange(pendingAuthEvent.event, pendingAuthEvent.session);
+            console.log(
+              "[AuthContext] Processing pending auth event:",
+              pendingAuthEvent,
+            );
+            handleAuthStateChange(
+              pendingAuthEvent.event,
+              pendingAuthEvent.session,
+            );
             setPendingAuthEvent(null);
           }
         }
       } catch (error) {
-        console.error('[AuthContext] Error initializing auth:', error);
+        console.error("[AuthContext] Error initializing auth:", error);
         if (mounted) {
           setLoading(false);
           setIsInitialized(true);
@@ -96,18 +108,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    function handleAuthStateChange(event: string, currentSession: Session | null) {
-      console.log('[AuthContext] Handling auth state change:', { event, hasSession: !!currentSession, hasToken: !!currentSession?.access_token });
-      
+    function handleAuthStateChange(
+      event: string,
+      currentSession: Session | null,
+    ) {
+      console.log("[AuthContext] Handling auth state change:", {
+        event,
+        hasSession: !!currentSession,
+        hasToken: !!currentSession?.access_token,
+      });
+
       if (currentSession?.access_token) {
-        console.log('[AuthContext] Updating session state with new session');
+        console.log("[AuthContext] Updating session state with new session");
         setSession(currentSession);
         setUser(currentSession.user);
         if (currentSession.user) {
           fetchProfile(currentSession.user.id);
         }
-      } else if (event === 'SIGNED_OUT') {
-        console.log('[AuthContext] Clearing session state');
+      } else if (event === "SIGNED_OUT") {
+        console.log("[AuthContext] Clearing session state");
         setSession(null);
         setUser(null);
         setProfile(null);
@@ -119,14 +138,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      console.log('[AuthContext] Auth state changed:', { event, hasSession: !!currentSession, hasToken: !!currentSession?.access_token });
-      
+      console.log("[AuthContext] Auth state changed:", {
+        event,
+        hasSession: !!currentSession,
+        hasToken: !!currentSession?.access_token,
+      });
+
       if (mounted) {
         if (isInitializing) {
-          console.log('[AuthContext] Storing pending auth event during initialization');
+          console.log(
+            "[AuthContext] Storing pending auth event during initialization",
+          );
           setPendingAuthEvent({ event, session: currentSession });
         } else {
-          console.log('[AuthContext] Processing auth event immediately');
+          console.log("[AuthContext] Processing auth event immediately");
           handleAuthStateChange(event, currentSession);
         }
       }
@@ -141,15 +166,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Add a debug effect to log session changes
   useEffect(() => {
-    console.log('[AuthContext] Session state updated:', { 
-      hasSession: !!session, 
-      hasUser: !!user, 
-      loading, 
-      isInitialized, 
-      isInitializing, 
-      hasPendingEvent: !!pendingAuthEvent 
+    if (!isInitializing && pendingAuthEvent) {
+      console.log(
+        "[AuthContext] Processing pending auth event after init:",
+        pendingAuthEvent,
+      );
+      handleAuthStateChange(pendingAuthEvent.event, pendingAuthEvent.session);
+      setPendingAuthEvent(null);
+    }
+
+    function handleAuthStateChange(
+      event: string,
+      currentSession: Session | null,
+    ) {
+      if (currentSession?.access_token) {
+        setSession(currentSession);
+        setUser(currentSession.user);
+        if (currentSession.user) {
+          fetchProfile(currentSession.user.id);
+        }
+      } else if (event === "SIGNED_OUT") {
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+      }
+      setLoading(false);
+    }
+  }, [isInitializing, pendingAuthEvent]);
+
+  useEffect(() => {
+    console.log("[AuthContext] Session state updated:", {
+      hasSession: !!session,
+      hasUser: !!user,
+      loading,
+      isInitialized,
+      isInitializing,
+      hasPendingEvent: !!pendingAuthEvent,
     });
   }, [session, user, loading, isInitialized, isInitializing, pendingAuthEvent]);
 

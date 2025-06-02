@@ -1,17 +1,28 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/contexts/AuthContext";
 
 export default function useRequireAuth() {
-  const { user, loading } = useAuth();
+  const { user, loading, session } = useAuth();
   const router = useRouter();
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.replace("/auth/login");
-    }
-  }, [user, loading, router]);
+    if (!loading) {
+      const timer = setTimeout(() => {
+        if (!session?.access_token) {
+          router.replace("/auth/login");
+        }
+        setIsChecking(false);
+      }, 100);
 
-  return { loading, authenticated: !!user };
+      return () => clearTimeout(timer);
+    }
+  }, [user, loading, session, router]);
+
+  return {
+    loading: loading || isChecking,
+    authenticated: !!session?.access_token,
+  };
 }

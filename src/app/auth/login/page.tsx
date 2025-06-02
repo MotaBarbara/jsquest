@@ -34,10 +34,11 @@ export default function Login() {
       setMessage("Invalid credentials, please try again");
       return;
     }
-    router.push("/levels");
-  }
-  console.log("Component rendered");
 
+    setTimeout(() => {
+      router.push("/levels");
+    }, 500);
+  }
 
   return (
     <main className="h-[100vh] min-h-[700px] flex flex-col items-center justify-center p-6">

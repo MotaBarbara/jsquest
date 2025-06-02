@@ -49,32 +49,118 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [pendingAuthEvent, setPendingAuthEvent] = useState<{
+    event: string;
+    session: Session | null;
+  } | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-      setLoading(false);
-    });
+    let mounted = true;
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      } else {
+    async function initializeAuth() {
+      try {
+        setIsInitializing(true);
+
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
+
+        if (mounted) {
+          if (currentSession?.access_token) {
+            setSession(currentSession);
+            setUser(currentSession.user);
+            if (currentSession.user) {
+              await fetchProfile(currentSession.user.id);
+            }
+          }
+          setLoading(false);
+          setIsInitialized(true);
+          setIsInitializing(false);
+
+          if (pendingAuthEvent) {
+            handleAuthStateChange(
+              pendingAuthEvent.event,
+              pendingAuthEvent.session,
+            );
+            setPendingAuthEvent(null);
+          }
+        }
+      } catch (error) {
+        console.error("[AuthContext] Error initializing auth:", error);
+        if (mounted) {
+          setLoading(false);
+          setIsInitialized(true);
+          setIsInitializing(false);
+        }
+      }
+    }
+
+    function handleAuthStateChange(
+      event: string,
+      currentSession: Session | null,
+    ) {
+
+      if (currentSession?.access_token) {
+        setSession(currentSession);
+        setUser(currentSession.user);
+        if (currentSession.user) {
+          fetchProfile(currentSession.user.id);
+        }
+      } else if (event === "SIGNED_OUT") {
+        setSession(null);
+        setUser(null);
         setProfile(null);
       }
       setLoading(false);
+    }
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+
+      if (mounted) {
+        if (isInitializing) {
+          setPendingAuthEvent({ event, session: currentSession });
+        } else {
+          handleAuthStateChange(event, currentSession);
+        }
+      }
     });
 
-    return () => subscription.unsubscribe();
+    initializeAuth();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
+
+  useEffect(() => {
+    if (!isInitializing && pendingAuthEvent) {
+      handleAuthStateChange(pendingAuthEvent.event, pendingAuthEvent.session);
+      setPendingAuthEvent(null);
+    }
+
+    function handleAuthStateChange(
+      event: string,
+      currentSession: Session | null,
+    ) {
+      if (currentSession?.access_token) {
+        setSession(currentSession);
+        setUser(currentSession.user);
+        if (currentSession.user) {
+          fetchProfile(currentSession.user.id);
+        }
+      } else if (event === "SIGNED_OUT") {
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+      }
+      setLoading(false);
+    }
+  }, [isInitializing, pendingAuthEvent]);
 
   async function fetchProfile(userId: string) {
     const { data, error } = await supabase
@@ -188,7 +274,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     session,
-    loading,
+    loading: loading || !isInitialized || isInitializing,
     profile,
     signIn,
     signUp,

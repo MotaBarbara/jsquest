@@ -1,6 +1,39 @@
 import { User } from "@supabase/supabase-js";
 import { StaticImageData } from "next/image";
 import { ReactNode } from "react";
+import { Session, PostgrestError, AuthError } from "@supabase/supabase-js";
+
+export interface ProfileProps {
+  first_name: string;
+  last_name: string;
+  avatar_url: string | null;
+}
+export interface AuthContextTypeProps {
+  user: User | null;
+  session: Session | null;
+  loading: boolean;
+  profile: Profile | null;
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: AuthError | null }>;
+  signUp: (
+    email: string,
+    password: string,
+    userData: { first_name: string; last_name: string },
+  ) => Promise<{ error: AuthError | PostgrestError | null }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
+  updatePassword: (password: string) => Promise<{ error: AuthError | null }>;
+  updateProfile: (data: {
+    first_name?: string;
+    last_name?: string;
+    avatar_url?: string | null;
+  }) => Promise<{ error: PostgrestError | Error | null }>;
+  uploadAvatar: (
+    file: File,
+  ) => Promise<{ url: string | null; error: PostgrestError | Error | null }>;
+}
 
 export interface FunctionalityCardProps {
   src: StaticImageData;

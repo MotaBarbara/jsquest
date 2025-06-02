@@ -11,7 +11,6 @@ import { useAvatar } from "@/src/hooks/useAvatar";
 export default function UpdateUser() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [password, setPassword] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [defaultFirstName, setDefaultFirstName] = useState("");
@@ -102,17 +101,6 @@ export default function UpdateUser() {
       }
     }
 
-    if (password.length > 0) {
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: password,
-      });
-
-      if (updateError) {
-        setError(updateError.message);
-        return;
-      }
-    }
-
     const { error: profileError } = await supabase
       .from("profiles")
       .update({
@@ -128,7 +116,6 @@ export default function UpdateUser() {
     }
 
     setMessage("Details updated.");
-    setPassword("");
     setAvatarFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -212,27 +199,10 @@ export default function UpdateUser() {
         </div>
 
         <div>
-          <label htmlFor="password">Password</label>
-          <div className="relative inline-block">
-            <input
-              placeholder="********"
-              autoComplete="new-password"
-              className={`editInput pr-8 ${
-                password ? "input-filled" : "input-default"
-              }`}
-              id="password"
-              type="password"
-              value="password"
-              onChange={e => setPassword(e.target.value)}
-            />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--unavailable-text)]">
-              <Pen size={16} strokeWidth={1} />
-            </span>
-          </div>
           {error && <div className="text-[var(--danger)]">{error}</div>}
           {message && <div>{message}</div>}
         </div>
-        {updatedFirstName || updatedLastName || password || avatarFile ? (
+        {updatedFirstName || updatedLastName || avatarFile ? (
           <Button type="submit" variant="primary">
             Update details
           </Button>

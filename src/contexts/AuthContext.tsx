@@ -2,53 +2,17 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/src/lib/supabaseClient";
-import {
-  Session,
-  User,
-  PostgrestError,
-  AuthError,
-} from "@supabase/supabase-js";
+import { Session, User } from "@supabase/supabase-js";
+import { ProfileProps } from "../types/props";
+import { AuthContextTypeProps } from "../types/props";
 
-interface Profile {
-  first_name: string;
-  last_name: string;
-  avatar_url: string | null;
-}
-
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  loading: boolean;
-  profile: Profile | null;
-  signIn: (
-    email: string,
-    password: string,
-  ) => Promise<{ error: AuthError | null }>;
-  signUp: (
-    email: string,
-    password: string,
-    userData: { first_name: string; last_name: string },
-  ) => Promise<{ error: AuthError | PostgrestError | null }>;
-  signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
-  updatePassword: (password: string) => Promise<{ error: AuthError | null }>;
-  updateProfile: (data: {
-    first_name?: string;
-    last_name?: string;
-    avatar_url?: string | null;
-  }) => Promise<{ error: PostgrestError | Error | null }>;
-  uploadAvatar: (
-    file: File,
-  ) => Promise<{ url: string | null; error: PostgrestError | Error | null }>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextTypeProps | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<ProfileProps | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [pendingAuthEvent, setPendingAuthEvent] = useState<{
@@ -101,7 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       event: string,
       currentSession: Session | null,
     ) {
-
       if (currentSession?.access_token) {
         setSession(currentSession);
         setUser(currentSession.user);
@@ -119,7 +82,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-
       if (mounted) {
         if (isInitializing) {
           setPendingAuthEvent({ event, session: currentSession });

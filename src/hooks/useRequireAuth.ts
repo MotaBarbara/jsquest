@@ -10,12 +10,8 @@ export default function useRequireAuth() {
 
   useEffect(() => {
     if (!loading) {
-      console.log('Auth state in useRequireAuth:', { user, loading, session });
-      
-      // Add a small delay to ensure session is properly initialized
       const timer = setTimeout(() => {
         if (!session?.access_token) {
-          console.log('No valid session found, redirecting to login');
           router.replace("/auth/login");
         }
         setIsChecking(false);
@@ -25,5 +21,8 @@ export default function useRequireAuth() {
     }
   }, [user, loading, session, router]);
 
-  return { loading: loading || isChecking, authenticated: !!session?.access_token };
+  return {
+    loading: loading || isChecking,
+    authenticated: !!session?.access_token,
+  };
 }

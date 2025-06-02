@@ -34,7 +34,6 @@ export default function Login() {
       setMessage("Invalid credentials, please try again");
       return;
     }
-    console.log("logged in. redirect soon")
 
     setTimeout(() => {
       router.push("/levels");

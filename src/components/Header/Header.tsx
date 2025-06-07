@@ -24,7 +24,7 @@ export default function Header() {
 
   return (
     <header className="fixed w-full z-10">
-      <nav className="md:flex justify-between items-center py-4 px-5 md:px-12 m-auto max-w-[80rem] bg-[var(--background-color)] grid grid-cols-[auto_auto]">
+      <nav className="md:grid md:grid-cols-3 justify-between items-center py-4 px-5 md:px-12 m-auto max-w-[80rem] bg-[var(--background-color)] grid grid-cols-[auto_auto]">
         <Link
           href={user ? "/levels" : "/"}
           className={user ? "w-[35vw]" : "w-[175px]"}
@@ -32,7 +32,7 @@ export default function Header() {
           <Image src={Logo} alt="JS Quest Logo" width={100} height={100} />{" "}
         </Link>
 
-        <div className="hidden md:flex">
+        <div className="hidden md:flex gap-8 justify-center">
           <div className="flex gap-8">
             {user ? (
               <>
@@ -49,7 +49,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="hidden md:flex">
+        <div className="hidden md:flex justify-end">
           {!loading && user && (
             <UserAvatarMenu
               user={user}

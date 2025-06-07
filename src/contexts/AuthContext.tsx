@@ -13,7 +13,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileProps | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [pendingAuthEvent, setPendingAuthEvent] = useState<{
     event: string;
@@ -40,7 +39,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           }
           setLoading(false);
-          setIsInitialized(true);
           setIsInitializing(false);
 
           if (pendingAuthEvent) {
@@ -55,7 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error("[AuthContext] Error initializing auth:", error);
         if (mounted) {
           setLoading(false);
-          setIsInitialized(true);
           setIsInitializing(false);
         }
       }
@@ -236,7 +233,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     session,
-    loading: loading || !isInitialized || isInitializing,
+    loading: loading || isInitializing,
     profile,
     signIn,
     signUp,
